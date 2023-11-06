@@ -27,7 +27,8 @@ SECRET_KEY = 'django-insecure-8q%_x)l#ws^ch84^mivm5cqsfls-v@s$v6qyz$%p_yeaa-6l7#
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+LOGIN_URL = 'login'                 # 로그인 안한 사용자가 이동할 페이지
+AUTH_USER_MODEL = 'account.Team'    # 커스텀된 AUTH_USER_MODEL 지정
 
 # Application definition
 
