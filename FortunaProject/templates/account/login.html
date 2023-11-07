@@ -1,11 +1,126 @@
-<form method="post">
-    {% csrf_token %}
-    <label for="name">Team Name:</label>
-    <input type="text" name="name" required>
-    <label for="password">Password:</label>
-    <input type="password" name="password" required>
-    {{ form.as_p }}
-    <button type="submit">Login</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to right, #74ebd5, #acb6e5);
+        }
+
+        .box {
+            width: 80%; 
+            max-width: 500px; /* 새 박스 크기 */
+            margin: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
     
-</form>
-<a href="{% url 'signup' %}">Sign Up</a>
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.5;
+            text-align: center; /* 센터 정렬 추가 */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input[type=text],
+        input[type=password] {
+            width: calc(100% - 40px); /* 입력 필드 너비 조정 */
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        button {
+            padding: 10px 15px;
+            width: calc(100% - 40px); /* 버튼 너비 조정 */
+            background-color: #74ebd5;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #69c8b6;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .signup-link a {
+            color: #333;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .signup-link a:hover {
+            color: #74ebd5;
+        }
+    </style>
+</head>
+<body>
+    <div class="box left-box">
+        <h2>{{ config.welcome_title }}</h2>
+        <p>{{ config.welcome_message }}</p>
+    </div>
+    <div class="box right-box">
+        <form method="post">
+            {% csrf_token %}
+            <label for="name">Team Name:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Login</button>
+        </form>
+        <div class="signup-link">
+            Don't have an account? <a href="{% url 'signup' %}">Sign Up</a>
+        </div>
+    </div>
+    <script>
+        // Simple script to handle label float effect on focus
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', () => {
+                input.previousElementSibling.classList.add('active');
+            });
+            input.addEventListener('blur', () => {
+                if (input.value === '') {
+                    input.previousElementSibling.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
