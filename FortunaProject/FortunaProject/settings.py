@@ -26,14 +26,24 @@ SECRET_KEY = 'django-insecure-8q%_x)l#ws^ch84^mivm5cqsfls-v@s$v6qyz$%p_yeaa-6l7#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+### ========== My Customize settings ========== ###
+STATIC_URL = '/static/'             # -- python manage.py collectstatic (production실행 시)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]                                   
+
+LOGIN_URL = 'login'                 # -- 로그인 안한 사용자가 이동할 페이지
+AUTH_USER_MODEL = 'account.Team'    # -- 커스텀된 AUTH_USER_MODEL 지정
+### ========== My Customize settings ========== ###
+
+
 ALLOWED_HOSTS = []
-LOGIN_URL = 'login'                 # 로그인 안한 사용자가 이동할 페이지
-AUTH_USER_MODEL = 'account.Team'    # 커스텀된 AUTH_USER_MODEL 지정
 
 # Application definition
 
 INSTALLED_APPS = [
     'account',
+    'main',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

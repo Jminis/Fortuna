@@ -5,10 +5,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from .forms import SignupForm
 
-@login_required
-def index(request):
-    return render(request, 'index.html')
-
 def login_view(request):
     if request.method == 'POST':
         team_name = request.POST['name']
