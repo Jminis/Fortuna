@@ -32,6 +32,11 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]                                   
 
+##STATIC_ROOT 추가함
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
 LOGIN_URL = 'login'                 # -- 로그인 안한 사용자가 이동할 페이지
 AUTH_USER_MODEL = 'account.Team'    # -- 커스텀된 AUTH_USER_MODEL 지정
 ### ========== My Customize settings ========== ###
@@ -50,10 +55,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'log.apps.LogConfig',
+    'channels',
+    'channels_redis',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -83,7 +92,20 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'FortunaProject.wsgi.application'
+#WSGI_APPLICATION = 'FortunaProject.wsgi.application'
+
+#ASGI
+ASGI_APPLICATION = 'livelog.routing.application'
+
+#redis-channel
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 
 # Database
@@ -131,7 +153,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
