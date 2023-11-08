@@ -50,6 +50,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'log.apps.LogConfig',
+    'channels',
+    'channels_redis',
 ]
 
 MIDDLEWARE = [
@@ -83,7 +86,20 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'FortunaProject.wsgi.application'
+#WSGI_APPLICATION = 'FortunaProject.wsgi.application'
+
+#ASGI
+ASGI_APPLICATION = 'livelog.routing.application'
+
+#redis-channel
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 
 # Database
