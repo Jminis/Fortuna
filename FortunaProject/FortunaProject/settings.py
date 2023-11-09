@@ -27,12 +27,12 @@ SECRET_KEY = 'django-insecure-8q%_x)l#ws^ch84^mivm5cqsfls-v@s$v6qyz$%p_yeaa-6l7#
 DEBUG = True
 
 ### ========== My Customize settings ========== ###
-STATIC_URL = '/static/'             # -- python manage.py collectstatic (production실행 시)
+STATIC_URL = '/static/'             # -- 개발환경에서 사용되는 static url
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]                                   
 
-##STATIC_ROOT 추가함
+                                    # -- 프로덕션환경에서 사용되는 static url (python manage.py collectstatic)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 #STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
