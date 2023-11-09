@@ -1,15 +1,44 @@
 {% extends 'base.html' %}
  <!-- static 파일을 로드하기 위한 태그를 상단으로 이동 -->
 {% load static %}
+{% block extra_css %}
+<style>
+    .container {
+        max-width: 1200px; /* 컨테이너의 최대 너비를 조정 */
+        margin: auto; /* 페이지 중앙 정렬 */
+    }
+    .rounded-card {
+        border-radius: 10px; /* 카드의 모서리를 둥글게 */
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* 카드에 그림자 추가 */
+        overflow: hidden; /* 내용이 둥근 모서리를 넘어갈 경우 숨김 */
+    }
+    .logo-center {
+        text-align: center; /* 로고 이미지를 중앙에 위치 */
+        padding: 20px 0; /* 로고 이미지에 위 아래 패딩 추가 */
+    }
+    .footer {
+        text-align: center; /* 푸터 텍스트를 중앙에 위치 */
+        padding: 10px 0; /* 푸터에 위 아래 패딩 추가 */
+        background-color: #f8f9fa; /* 푸터 배경 색상 설정 */
+    }
+    .footer-space {
+        height: 50px; /* 하단 여백 공간 추가 */
+    }
+
+    /* 반응형 웹 디자인을 위한 미디어 쿼리 */
+    @media (max-width: 768px) {
+        .rounded-card {
+            margin-bottom: 20px; /* 모바일 뷰에서 카드 간 간격 조정 */
+        }
+    }
+</style>
+{% endblock extra_css %}
 {% block content %}
-    <!-- 최상단 로고 섹션 -->
-    <div class="logo-center">
-        <img src="{% static 'logo.png' %}" alt="Your Logo" width="400">
-    </div>
 
     <!-- 메인 컨텐츠 섹션 -->
     <div class="container mt-5">
         <div class="row">
+            <!-- 왼쪽 컬럼 내용 -->
             <div class="col-md-6">
                 <div class="rounded-card bg-white p-3 mb-3">
                     {% include 'log/log_.html' %} <!-- 로그 파일을 포함 -->
@@ -18,10 +47,10 @@
             <div class="col-md-6">
                 <!-- 오른쪽 컬럼 내용 -->
                 <div class="rounded-card bg-white p-3 mb-3">
-                    left 1
+                    right 1
                 </div>
                 <div class="rounded-card bg-white p-3">
-                    left 2
+                    right 2
                 </div>
             </div>
         </div>
