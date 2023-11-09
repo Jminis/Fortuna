@@ -2,7 +2,7 @@
     "index": {
         "index_image": "/static/fortuna.png",
         "index_title": "Live Attack Defense CTF",
-        "index_message": "This project designed by 'Security Factorial'\n\nMay luck follow you in every step and turn of life's journey\n\nThis platform is designed with a focus on real-time interaction"
+        "index_message": "This project designed from 'Security Factorial'\n\nMay luck follow you in every step and turn of life's journey\n\nThis platform is designed with a focus on real-time interaction"
     },
     "login": {
         "login_image": "/static/fortuna.png",

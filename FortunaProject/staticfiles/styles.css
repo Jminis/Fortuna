@@ -70,26 +70,3 @@ html, body {
 
 }
 
-/* 로그인 페이지 및 기타 폼 스타일링 */
-input[type="text"],
-input[type="password"],
-button,
-select,
-textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-button {
-    background-color: #0056b3;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #003d82;
-}
