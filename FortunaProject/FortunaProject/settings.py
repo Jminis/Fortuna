@@ -34,7 +34,8 @@ STATICFILES_DIRS = [
 
 ##STATIC_ROOT 추가함
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 
 LOGIN_URL = 'login'                 # -- 로그인 안한 사용자가 이동할 페이지
