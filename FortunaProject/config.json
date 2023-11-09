@@ -1,6 +1,11 @@
 {
+    "index": {
+        "index_image": "/static/fortuna.png",
+        "index_title": "Live Attack Defense CTF",
+        "index_message": "This project designed by 'Security Factorial'\n\nMay luck follow you in every step and turn of life's journey\n\nThis platform is designed with a focus on real-time interaction"
+    },
     "login": {
-        "welcome_title": "Fortuna",
-        "welcome_message": "Security Factorial\nasdfasdf"
+        "login_image": "/static/fortuna.png",
+        "login_message": "This platform is managed by an administrator for participant accounts.\n\nIf you do not know your account information,\n\nplease inquire by accessing the link below.\n\n→ → woaalsdl12@gmail.com ← ←"
     }
 }

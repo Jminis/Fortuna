@@ -1,0 +1,95 @@
+/* 공통 바디 스타일 */
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7; /* 전체 배경색 설정 */
+}
+
+/* 네비게이션 바 스타일 */
+.navigation-bar {
+    background-color: #333;
+    color: white;
+    min-height: 50px;
+    line-height: 50px;
+}
+
+.nav-container {
+    width: 80%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-logo {
+    text-decoration: none;
+    color: white;
+    font-size: 24px;
+}
+
+.nav-menu {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.nav-item a {
+    text-decoration: none;
+    color: white;
+    padding: 0 15px;
+    transition: background-color 0.3s;
+}
+
+.nav-item a:hover {
+    background-color: #555;
+}
+
+.nav-login a {
+    text-decoration: none;
+    color: white;
+    margin-left: 10px;
+    padding: 5px 10px;
+    border: 1px solid white;
+    transition: background-color 0.3s;
+}
+
+.nav-login a:hover {
+    background-color: #555;
+}
+
+.footer {
+    color: #6c757d; /* 푸터 텍스트색 */
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+
+}
+
+/* 로그인 페이지 및 기타 폼 스타일링 */
+input[type="text"],
+input[type="password"],
+button,
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #003d82;
+}

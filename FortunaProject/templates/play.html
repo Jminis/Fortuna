@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+ <!-- static 파일을 로드하기 위한 태그를 상단으로 이동 -->
+{% load static %}
+{% block content %}
+    <!-- 최상단 로고 섹션 -->
+    <div class="logo-center">
+        <img src="{% static 'logo.png' %}" alt="Your Logo" width="400">
+    </div>
+
+    <!-- 메인 컨텐츠 섹션 -->
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="rounded-card bg-white p-3 mb-3">
+                    {% include 'log/log_.html' %} <!-- 로그 파일을 포함 -->
+                </div>
+            </div>
+            <div class="col-md-6">
+                <!-- 오른쪽 컬럼 내용 -->
+                <div class="rounded-card bg-white p-3 mb-3">
+                    left 1
+                </div>
+                <div class="rounded-card bg-white p-3">
+                    left 2
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 여백을 주기 위한 공간 -->
+    <div class="footer-space"></div>
+{% endblock content %}
+
+{% block footer %}
+    <div class="footer">
+        <!-- 푸터 내용 -->
+        Powerd by Security Factorial
+    </div>
+{% endblock footer %}

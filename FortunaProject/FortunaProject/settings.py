@@ -38,7 +38,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 
-LOGIN_URL = 'login'                 # -- 로그인 안한 사용자가 이동할 페이지
+LOGIN_URL = '/'                 # -- 로그인 안한 사용자가 이동할 페이지
 AUTH_USER_MODEL = 'account.Team'    # -- 커스텀된 AUTH_USER_MODEL 지정
 ### ========== My Customize settings ========== ###
 

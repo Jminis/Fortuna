@@ -1,61 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CTF Framework</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <style>
-        body {
-            background: linear-gradient(to bottom, #FFFFFF, #2ec3fc);
-        }
-        .logo-center {
-            text-align: center;
-            padding-top: 20px;
-        }
-        .footer {
-            text-align: center;
-            padding: 10px 0;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-        .rounded-card {
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-    </style>
-</head>
-<body>
-    <!-- 최상단 로고 섹션 -->
-    <div class="logo-center">
-        {% load static %}
-        <img src="{% static 'logo.png' %}" alt="Your Logo" width="400">
-    </div>
+{% extends 'base.html' %}
 
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="rounded-card bg-white p-3 mb-3">
-                
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="rounded-card bg-white p-3 mb-3">
-                
-                </div>
-                <div class="rounded-card bg-white p-3">
-                
-                </div>
-            </div>
+{% block title %}Fortuna{% endblock title %}
+
+{% block extra_css %}
+<style>
+        /* 이 스타일은 index.html에만 적용됩니다. */
+        .index-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: calc(100vh - 50px); /* 네비게이션 바의 높이만큼 제외 */
+            text-align: center;
+        }
+        .index-content {
+            width: 100%; /* 내부 요소 너비 설정 */
+            max-width: 600px; /* 내부 요소의 최대 너비 설정 */
+            padding: 20px; /* 내부 요소의 패딩 설정 */
+        }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+    <div class="index-center">
+        <div class="index-content">
+            <img src="{{ config.index_image }}" alt="Index Image" width="400px">
+            <h2>{{ config.index_title }}</h2>
+            <p>{{ config.index_message | linebreaksbr }}</p>
         </div>
     </div>
-    <br/>
-    <br/>
-    <br/>
-    <a href="{% url 'logout' %}">Logout</a>
-</body>
-</html>
+{% endblock content %}

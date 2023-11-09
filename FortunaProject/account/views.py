@@ -16,9 +16,8 @@ def login_view(request):
         team = authenticate(request, username=team_name, password=password)  # Change 'name' to 'username' if your user model uses 'username' field
         if team is not None:
             login(request, team)
-            return redirect('index')  # Ensure you have 'index' view or URL configured in your urls.py
+            return redirect('index')
         else:
-            # It's good to give some feedback when login fails
             context = {
                 'error': "Invalid team name or password.",
                 'config': config_data['login'],
