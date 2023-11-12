@@ -1,8 +1,7 @@
-# log/consumers.py
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-class DataConsumer(AsyncWebsocketConsumer):
+class LogConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         print("WebSocket connected!")
         # Joining the "chat" group

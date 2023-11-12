@@ -1,13 +1,18 @@
-import os
-import django
-from django.core.asgi import get_asgi_application
+import django,os
 from channels.routing import ProtocolTypeRouter, URLRouter
-import log.routing
+from channels.auth import AuthMiddlewareStack
+from django.core.asgi import get_asgi_application
+import main.routing
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'FortunaProject.settings')
 django.setup()
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
-    "websocket": URLRouter(log.routing.websocket_urlpatterns)
+    "websocket": AuthMiddlewareStack(
+        URLRouter(
+            main.routing.websocket_urlpatterns
+        )
+    ),
 })
+

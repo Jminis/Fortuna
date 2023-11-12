@@ -1,0 +1,17 @@
+{% block content %}
+{% load static %}
+<script src="{% static 'js/rank.js' %}"></script>
+<h1>Team Rankings</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Rank</th>
+            <th>Team Name</th>
+            <th>Score</th>
+        </tr>
+    </thead>
+    <tbody id="rank-table-body">
+        <!-- 여기에 실시간 랭킹 데이터가 표시됩니다 -->
+    </tbody>
+</table>
+{% endblock %}
