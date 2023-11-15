@@ -1,7 +1,8 @@
 // WebSocket 연결
-let socket = new WebSocket('ws://127.0.0.1:8000/ws/data/');
+let socket = new WebSocket('ws://127.0.0.1:8000/ws/log/');
 
 socket.onmessage = function(event) {
+    console.log("Log WebSocket connected!");
     let data = JSON.parse(event.data);
     addMessageToPage(data.data);
 };
