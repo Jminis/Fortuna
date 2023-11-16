@@ -22,5 +22,5 @@ urlpatterns = [
     path('', include('main.urls')),
     path('', include('account.urls')),
     path('', include('challenge.urls')),
-    path('this/', include('log.urls')),
+    
 ] 

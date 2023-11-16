@@ -1,17 +1,118 @@
-{% block content %}
-{% load static %}
-<script src="{% static 'js/rank.js' %}"></script>
-<h1>Team Rankings</h1>
-<table>
-    <thead>
-        <tr>
-            <th>Rank</th>
-            <th>Team Name</th>
-            <th>Score</th>
-        </tr>
-    </thead>
-    <tbody id="rank-table-body">
-        <!-- 여기에 실시간 랭킹 데이터가 표시됩니다 -->
-    </tbody>
-</table>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Team Rankings</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .ranking-table {
+            width: 100%;
+            margin-top: 20px;
+            text-align: center; /* 모든 셀을 가운데 정렬 */
+        }
+        .ranking-table th, .ranking-table td {
+            padding: 8px;
+        }
+        .ranking-table tr:hover {background-color: #ddd;}
+        .up {
+            color: green;
+        }
+        .down {
+            color: red;
+        }
+        .no-change {
+            color: grey;
+        }
+        .ranking-row {
+            transition: all 1s ease; /* 부드러운 이동 효과 */
+        }
+        .change-column {
+            width: 50px; /* 변동 열의 너비 고정 */
+        }
+        .first-place { color: gold; }
+        .second-place { color: silver; }
+        .third-place { color: #cd7f32; }
+    </style>
+</head>
+<body>
+    <table class="ranking-table">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Team Name</th>
+                <th>Score</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="ranking-body">
+            <!-- 순위 데이터가 여기에 삽입됩니다 -->
+        </tbody>
+    </table>
+
+    <script>
+        let previousRanks = {};
+
+        function updateRanking() {
+            $.ajax({
+                url: '/rank', // 서버의 순위 데이터 API URL
+                success: function(response) {
+                    let serverTime = new Date(response.server_time);
+                    let teams = response.teams;
+                    let tbody = $('#ranking-body');
+                    tbody.empty();
+
+                    teams.forEach(function(team, index) {
+                        let change = "";
+                        let rankChange = previousRanks[team.name] ? previousRanks[team.name] - team.rank : 0;
+                        let rankClass = "";
+
+                        if (team.rank === 1) {
+                            rankClass = "first-place";
+                        } else if (team.rank === 2) {
+                            rankClass = "second-place";
+                        } else if (team.rank === 3) {
+                            rankClass = "third-place";
+                        }
+
+                        if (rankChange > 0) {
+                            change = `<span class="up">↑ ${rankChange}</span>`;
+                        } else if (rankChange < 0) {
+                            change = `<span class="down">↓ ${Math.abs(rankChange)}</span>`;
+                        } else {
+                            change = `<span class="no-change">—</span>`; // 변동 없음
+                        }
+
+                        tbody.append(
+                            `<tr class="ranking-row">
+                                <td class="${rankClass}">${team.rank}${getOrdinalSuffix(team.rank)}</td>
+                                <td>${team.name}</td>
+                                <td>${team.score}</td>
+                                <td style="width: 50px">${change}</td
+                            </tr>`
+                        );
+
+                        previousRanks[team.name] = team.rank;
+                    });
+
+                    scheduleNextUpdate(serverTime);
+                }
+            });
+        }
+
+        function getOrdinalSuffix(rank) {
+            if (rank === 1) return 'st';
+            else if (rank === 2) return 'nd';
+            else if (rank === 3) return 'rd';
+            return 'th';
+        }
+
+        function scheduleNextUpdate(serverTime) {
+            var now = new Date();
+            var delay = 10000 - (now - serverTime) % 10000; // 다음 10초 간격까지의 시간
+            setTimeout(updateRanking, delay);
+        }
+
+        updateRanking(); // 페이지 로드 시 초기 데이터 로드 및 첫 번째 스케줄링
+    </script>
+</body>
+</html>

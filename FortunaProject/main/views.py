@@ -17,8 +17,4 @@ def index_view(request):
     return render(request, 'index.html', context)
 
 def play_view(request):
-    teams = Team.objects.all().order_by('-score')  # 점수가 높은 순으로 팀들을 정렬
-    context = {
-        'teams': teams,
-    }
-    return render(request, 'play.html', context)
+    return render(request, 'play.html')

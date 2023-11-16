@@ -1,8 +1,9 @@
-from django.shortcuts import render
-from account.models import Team  # 'account' 앱에서 'Team' 모델을 임포트
-
+from django.http import JsonResponse
+from django.utils import timezone
+from account.models import Team
 
 def rank_view(request):
-    teams = Team.objects.all().order_by('-score')  # 점수가 높은 순으로 팀들을 정렬
-    context = {'teams': teams}
-    return render(request, 'rank.html', context)  # rank.html 템플릿으로 데이터 전달
+    teams = Team.objects.all().order_by('-score')
+    data = [{'name': team.name, 'score': team.score, 'rank': idx + 1} for idx, team in enumerate(teams)]
+    server_time = timezone.now()
+    return JsonResponse({'teams': data, 'server_time': server_time.isoformat()}, safe=False)
