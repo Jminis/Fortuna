@@ -7,6 +7,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Fortuna{% endblock title %}</title>
     <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <style>
+        .navigation-bar {
+            position: fixed; /* 네비게이션 바 고정 */
+            top: 0; /* 상단에 고정 */
+            left: 0; /* 좌측에 고정 */
+            width: 100%; /* 너비 전체 */
+            z-index: 1000; /* 다른 요소 위에 오도록 z-index 설정 */
+        }
+
+        /* 네비게이션 바 아래에 본문이 시작되도록 여백 추가 */
+        #content {
+            padding-top: 40px; /* 네비게이션 바 높이에 맞춰 조정 */
+        }
+    </style>
     {% block extra_css %}{% endblock extra_css %}
 </head>
 <body>
@@ -16,14 +30,14 @@
             <a href="/" class="nav-logo">Fortuna</a>
             <ul class="nav-menu">
                 <li class="nav-item"><a href="/play">Play</a></li>
-                <li class="nav-item"><a href="/rank">Rank</a></li>
-                <li class="nav-item"><a href="/challenge">Challenge</a></li>
+                <li class="nav-item"><a href="/status">Status</a></li>
+                <li class="nav-item"><a href="/notice">Notice</a></li>
             </ul>
             <div class="nav-login">
                 {% if user.is_authenticated %}
-                    <a href="/logout">Logout</a>
+                    <a href="/account/logout">Logout</a>
                 {% else %}
-                    <a href="/login">Login!!</a>
+                    <a href="/account/login">Login!!</a>
                 {% endif %}
             </div>
         </div>

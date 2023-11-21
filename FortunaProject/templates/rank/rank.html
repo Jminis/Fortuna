@@ -32,6 +32,9 @@
         .first-place { color: gold; }
         .second-place { color: silver; }
         .third-place { color: #cd7f32; }
+        .highlight-team {
+            background-color: #ffffe0; /* 연한 노랑색 배경 */
+        }
     </style>
 </head>
 <body>
@@ -51,6 +54,7 @@
 
     <script>
         let previousRanks = {};
+        let loginTeam = "{{ request.user.name|escapejs }}";
 
         function updateRanking() {
             $.ajax({
@@ -82,12 +86,14 @@
                             change = `<span class="no-change">—</span>`; // 변동 없음
                         }
 
+                        let rowClass = team.name === loginTeam ? "highlight-team" : ""; // 로그인한 팀에 대한 클래스 추가
+
                         tbody.append(
-                            `<tr class="ranking-row">
+                            `<tr class="ranking-row ${rowClass}">
                                 <td class="${rankClass}">${team.rank}${getOrdinalSuffix(team.rank)}</td>
                                 <td>${team.name}</td>
                                 <td>${team.score}</td>
-                                <td style="width: 50px">${change}</td
+                                <td class="change-column">${change}</td>
                             </tr>`
                         );
 
