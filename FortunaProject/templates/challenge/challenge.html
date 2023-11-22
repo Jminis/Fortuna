@@ -3,37 +3,73 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>challenge</title>
+    <title>테스트용 challenge.html</title>
 </head>
 <style>
     .challenge-row {
         display: flex;
         justify-content: space-between;
     }
+
+    .challenge-button {
+        display: flex;
+        flex-direction: column; /* 요소를 세로로 정렬 */
+        align-items: center; /* 중앙 정렬 */
+        justify-content: center; /* 세로축 중앙 정렬 */
+        text-align: center; /* 텍스트 중앙 정렬 */
+    }
+
+    .challenge-button button {
+        border: none; /* 버튼 기본 테두리 제거 */
+        background: none; /* 버튼 기본 배경 제거 */
+        cursor: pointer; /* 마우스 오버시 커서 변경 */
+        padding: 10px; /* 버튼 주변에 패딩 추가 */
+    }
+
+    .challenge-button button img {
+        max-width: 60px; /* 이미지 최대 너비 설정 */
+        height: auto; /* 이미지 높이 자동 조절 */
+    }
+
+    /* 이미지 설명 텍스트 스타일 */
+    .challenge-button button {
+        font-size: 14px; /* 텍스트 크기 */
+        margin-top: 5px; /* 이미지와 텍스트 사이 간격 */
+    }
 </style>
 <body>
 {% load static %}
 <!-- 챌린지 목록 -->
 <div class="challenge-list">
-    
+<<<<<<< Updated upstream
+    <h2>Challenges</h2>
+=======
+>>>>>>> Stashed changes
     <div class="challenge-row">
-        <!-- challenge-circle를 button 태그로 변경하고 모달을 띄울 data-* 속성 추가 -->
-        <button id="chall1" onclick="openModal(1)">
-            <img src="{% static 'testButton.png' %}" alt="FullState" width="60px" height="120px">
-            SmileMarket
-        </button>
-        <button id="chall2" onclick="openModal(2)">
-            <img src="{% static 'testButton.png' %}" alt="FullState" width="60px" height="120px">
-            Calculator
-        </button>
-        <button id="chall3" onclick="openModal(3)">
-            <img src="{% static 'testButton.png' %}" alt="FullState" width="60px" height="120px">
-            FoxGallery
-        </button>
-        <button id="chall4" onclick="openModal(4)">
-            <img src="{% static 'testButton.png' %}" alt="FullState" width="60px" height="120px">
-            OmpangiStore
-        </button>
+        <div class="challenge-button">
+            <button id="chall1" onclick="openModal(1)">
+                <img src="{% static 'non_attacked_icon.png' %}" alt="FullState" width="60px" height="120px">
+                SmileMarket
+            </button>
+        </div>
+        <div class="challenge-button">
+            <button id="chall2" onclick="openModal(2)">
+                <img src="{% static 'non_attacked_icon.png' %}" alt="FullState" width="60px" height="120px">
+                Calculator
+            </button>
+        </div>
+        <div class="challenge-button">
+            <button id="chall3" onclick="openModal(3)">
+                <img src="{% static 'non_attacked_icon.png' %}" alt="FullState" width="60px" height="120px">
+                FoxGallery
+            </button>
+        </div>
+        <div class="challenge-button">
+            <button id="chall4" onclick="openModal(4)">
+                <img src="{% static 'non_attacked_icon.png' %}" alt="FullState" width="60px" height="120px">
+                OmpangiStore
+            </button>
+        </div>
     </div>
 </div>
 
