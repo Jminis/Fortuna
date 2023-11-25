@@ -74,7 +74,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.0.0-beta1/js/bootstrap.min.js"></script>
 <script>
-    let fetchInterval = setInterval(fetchGameboxData, 1000);  // 5초마다 데이터 요청
 
     function fetchGameboxData() { // GameBox로부터 데이터를 받아오는 함수
         fetch('/challenge/get_challenge_data?team_id={{ user }}')  // 게임 데이터를 불러오는 URL
@@ -88,17 +87,53 @@
             .catch(error => console.error('Error fetching gamebox data:', error));
     }
 
+    fetchGameboxData();
+    let fetchInterval = setInterval(fetchGameboxData, 1000);  // 1초마다 데이터 요청
+
+    // 웹소켓 연결 설정
+    let challenge_socket = new WebSocket('ws://127.0.0.1:8000/ws/challenge/');
+
+    // 웹소켓 메시지 수신 이벤트
+    challenge_socket.onmessage = function (event) {
+        console.log("challenge websocket recieved");
+        let message = JSON.parse(event.data);
+        // 데이터베이스 변조가 감지되면 버튼 데이터를 새로 업데이트
+        if (message.message === "GameBox Updated") {
+            fetchGameboxData();
+        }
+    };
+
+    challenge_socket.onclose = function (event) {
+        console.log('WebSocket connection closed unexpectedly.');
+    };
+
+    challenge_socket.onerror = function (error) {
+        console.error('WebSocket error:', error);
+    };
+
     function updateGameboxButtons(gameboxes) { // 게임박스 버튼 생성 함수
         const container = document.querySelector('.challenge-row');
         container.innerHTML = '';  // 기존 내용을 비움
         gameboxes.forEach(gamebox => {
+            let imageFileName;
+            if (gamebox.is_down == false && gamebox.is_attacked == false) {
+                imageFileName = "{% static 'non_attacked_icon.png' %}";
+            } else if (gamebox.is_down == true && gamebox.is_attacked == false) {
+                imageFileName = "{% static 'is_down_icon.png' %}";
+            } else if (gamebox.is_down == false && gamebox.is_attacked == true) {
+                imageFileName = "{% static 'is_attacked_icon.png' %}";
+            } else {
+                imageFileName = "{% static 'is_down_attacked_icon.png' %}";
+            }
+            console.log(gamebox)
             const buttonHTML = `
             <div class="challenge-button">
                 <button id="chall${gamebox.challenge_id}" onclick="openModal('${gamebox.challenge_id}')">
-                    <img src="{% static "non_attacked_icon.png" %}" alt="FullState" width="60px" height="120px">
+                    <img src="${imageFileName}" alt="FullState" width="60px" height="120px">
                     <div>${gamebox.challenge_id}</div>
                 </button>
             </div>`;
+            console.log(buttonHTML)
             container.innerHTML += buttonHTML;
         });
     }
