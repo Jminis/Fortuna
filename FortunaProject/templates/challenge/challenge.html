@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>테스트용 challenge.html</title>
 </head>
+
 <style>
     .challenge-row {
         display: flex;
@@ -24,11 +25,15 @@
         background: none; /* 버튼 기본 배경 제거 */
         cursor: pointer; /* 마우스 오버시 커서 변경 */
         padding: 10px; /* 버튼 주변에 패딩 추가 */
+        border: none; /* 버튼 기본 테두리 제거 */
+        cursor: pointer; /* 마우스 오버시 커서 변경 */
+        background: none; /* 버튼 기본 배경 제거 */
     }
 
     .challenge-button button img {
         max-width: 60px; /* 이미지 최대 너비 설정 */
         height: auto; /* 이미지 높이 자동 조절 */
+        margin-bottom: 5px; /* 이미지와 텍스트 사이 간격 */
     }
 
     /* 이미지 설명 텍스트 스타일 */
@@ -37,41 +42,31 @@
         margin-top: 5px; /* 이미지와 텍스트 사이 간격 */
     }
 </style>
+
 <body>
 {% load static %}
 <!-- 챌린지 목록 -->
 <div class="challenge-list">
-<<<<<<< Updated upstream
     <h2>Challenges</h2>
-=======
->>>>>>> Stashed changes
     <div class="challenge-row">
-        <div class="challenge-button">
-            <button id="chall1" onclick="openModal(1)">
-                <img src="{% static 'non_attacked_icon.png' %}" alt="FullState" width="60px" height="120px">
-                SmileMarket
-            </button>
-        </div>
-        <div class="challenge-button">
-            <button id="chall2" onclick="openModal(2)">
-                <img src="{% static 'non_attacked_icon.png' %}" alt="FullState" width="60px" height="120px">
-                Calculator
-            </button>
-        </div>
-        <div class="challenge-button">
-            <button id="chall3" onclick="openModal(3)">
-                <img src="{% static 'non_attacked_icon.png' %}" alt="FullState" width="60px" height="120px">
-                FoxGallery
-            </button>
-        </div>
-        <div class="challenge-button">
-            <button id="chall4" onclick="openModal(4)">
-                <img src="{% static 'non_attacked_icon.png' %}" alt="FullState" width="60px" height="120px">
-                OmpangiStore
-            </button>
-        </div>
+        {% if gameboxes %}
+            {% for gamebox in gameboxes %}
+                <div class="challenge-button">
+                    <button id="chall{{ gamebox.id }}" onclick="openModal({{ gamebox.id }})">
+                        <img src="{% static 'non_attacked_icon.png' %}" alt="FullState" width="60px" height="120px">
+                        <span>{{ gamebox.challenge_id }}</span> <!-- 'name' 필드를 예시로 사용 -->
+                    </button>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p id="loading-message">게임 데이터를 받아오는 중입니다</p>
+            <script>
+                fetchGameboxData();  // 페이지 로드 시 데이터 요청
+            </script>
+        {% endif %}
     </div>
 </div>
+
 
 <!-- Bootstrap JS와 CSS 추가 -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/5.0.0-beta1/css/bootstrap.min.css">
@@ -79,6 +74,35 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.0.0-beta1/js/bootstrap.min.js"></script>
 <script>
+    let fetchInterval = setInterval(fetchGameboxData, 1000);  // 5초마다 데이터 요청
+
+    function fetchGameboxData() { // GameBox로부터 데이터를 받아오는 함수
+        fetch('/challenge/get_challenge_data?team_id={{ user }}')  // 게임 데이터를 불러오는 URL
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    clearInterval(fetchInterval);  // 데이터가 있으면 반복 중지
+                    updateGameboxButtons(data);    // 버튼 업데이트 함수 호출
+                }
+            })
+            .catch(error => console.error('Error fetching gamebox data:', error));
+    }
+
+    function updateGameboxButtons(gameboxes) { // 게임박스 버튼 생성 함수
+        const container = document.querySelector('.challenge-row');
+        container.innerHTML = '';  // 기존 내용을 비움
+        gameboxes.forEach(gamebox => {
+            const buttonHTML = `
+            <div class="challenge-button">
+                <button id="chall${gamebox.challenge_id}" onclick="openModal('${gamebox.challenge_id}')">
+                    <img src="{% static "non_attacked_icon.png" %}" alt="FullState" width="60px" height="120px">
+                    <div>${gamebox.challenge_id}</div>
+                </button>
+            </div>`;
+            container.innerHTML += buttonHTML;
+        });
+    }
+
     function openModal(challengeId) { // 모달 열기 함수
         // AJAX 요청
         var url = `/challenge/get_challenge_data?challenge_id=${challengeId}&team_id={{ user }}`
@@ -89,13 +113,12 @@
                 // 모달 내용 업데이트
                 document.querySelector('#myModal .modal-container-title').textContent = data.challenge_id;
                 document.querySelector('#myModal .modal-container-body').innerHTML = `
-                    <p>description: ${data.description}</p>
-                `;
-                document.querySelector('#myModal .modal-container-footer').innerHTML = `
+                    <p>문제 설명</p>
+                    <p>${data.description}</p>
                     <div>score: ${data.score}</div>
-                    <div>team_id: ${data.team_id}</div>
-                    <div>ip: ${data.ip}</div>
-                    <div>port: ${data.port}</div>
+                `;
+                document.querySelector('#myModal .modal-container-footer').textContent = `
+                    접속정보 = ${data.ip}:${data.port}
                 `;
                 // 모달 표시
                 var modal = document.getElementById("myModal");
