@@ -27,19 +27,30 @@ SECRET_KEY = 'django-insecure-8q%_x)l#ws^ch84^mivm5cqsfls-v@s$v6qyz$%p_yeaa-6l7#
 DEBUG = True
 
 ### ========== My Customize settings ========== ###
-STATIC_URL = '/static/'             # -- 개발환경에서 사용되는 static url
+# -- 개발환경에서 사용되는 static url
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]                                   
 
-                                    # -- 프로덕션환경에서 사용되는 static url (python manage.py collectstatic)
+# -- 프로덕션환경에서 사용되는 static url (python manage.py collectstatic)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
-
-
-LOGIN_URL = '/'                 # -- 로그인 안한 사용자가 이동할 페이지
-AUTH_USER_MODEL = 'account.Team'    # -- 커스텀된 AUTH_USER_MODEL 지정
+# -- 로그인 안한 사용자가 이동할 페이지
+LOGIN_URL = '/'                 
+# -- 커스텀된 AUTH_USER_MODEL 지정
+AUTH_USER_MODEL = 'account.Team'    
+# -- redis-channel 설정
+#WSGI_APPLICATION = 'FortunaProject.wsgi.application' #비활성화
+ASGI_APPLICATION = 'main.routing.application'    
+CHANNEL_LAYERS = {              
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 ### ========== My Customize settings ========== ###
 
 
@@ -48,6 +59,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'status',
+    'notice',
+    'rank',
+    'log',
     'account',
     'main',
     'challenge',
@@ -57,7 +72,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'log.apps.LogConfig',
+    #'log.apps.LogConfig',
     'channels',
     'channels_redis',
 ]
@@ -94,20 +109,7 @@ TEMPLATES = [
     },
 ]
 
-#WSGI_APPLICATION = 'FortunaProject.wsgi.application'
 
-#ASGI
-ASGI_APPLICATION = 'livelog.routing.application'
-
-#redis-channel
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
-        },
-    },
-}
 
 
 # Database

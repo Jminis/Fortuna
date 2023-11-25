@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Status{% endblock title %}
+
+{% block extra_css %}
+<style>
+    .team-row {
+        margin-bottom: 20px;
+    }
+
+    .team-box {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background-color: #f8f9fa;
+        padding: 15px;
+        margin: 10px 0;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transition: box-shadow 0.3s;
+    }
+
+    .team-box:hover {
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+
+    .team-header {
+        color: #007bff; /* Bootstrap primary color */
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+
+    .gamebox {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 10px;
+        transition: transform 0.2s;
+    }
+
+    .gamebox:hover {
+        transform: scale(1.05);
+    }
+
+    .status-label {
+        display: inline-block;
+        padding: 2px 5px;
+        border-radius: 4px;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .down { background-color: #ffc107; } /* Bootstrap warning color */
+    .attacked { background-color: #dc3545; } /* Bootstrap danger color */
+    .normal { background-color: #28a745; } /* Bootstrap success color */
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        {% for team_id, game_boxes in grouped_game_boxes.items %}
+            <div class="col-md-6 col-lg-4">
+                <div class="team-box">
+                    <h3 class="team-header">Team {{ team_id }}</h3>
+                    {% for box in game_boxes %}
+                        <div class="gamebox {% if box.is_attacked %}attacked{% elif box.is_down %}down{% else %}normal{% endif %}">
+                            <p>
+                                Challenge ID: {{ box.challenge_id }} <br>
+                                Status: <span class="status-label {% if box.is_down %}down{% elif box.is_attacked %}attacked{% else %}normal{% endif %}">
+                                {% if box.is_down %}Down{% elif box.is_attacked %}Attacked{% else %}Up{% endif %}
+                                </span>
+                            </p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

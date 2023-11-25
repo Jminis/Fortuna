@@ -1,22 +1,57 @@
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebSocket Test</title>
-    <script src="{% static 'log/scripts.js' %}"></script>
-</head>
-<body>
+<script src="{% static 'js/log.js' %}"></script>
+
+<style>
+    .inputArea {
+        display: flex;
+        align-items: center;
+    }
+
+    #inputField {
+        flex-grow: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        margin-right: -1px;
+    }
+
+    #sendButton {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        background-color: black;
+        color: white;
+        cursor: pointer;
+    }
+
+    #sendButton:hover {
+        background-color: #333333;
+    }
+
+    #messageList {
+        width: 100%;
+        max-height: 400px;
+        overflow-y: auto; /*내용 길면 스크롤*/
+        margin-bottom: 10px;
+        padding: 10px;
+        list-style: none;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+    }
+
+    #messageList li {
+        margin-bottom: 10px;
+        padding: 5px;
+        background-color: white;
+    }
+</style>
+
+<div class="inputArea">
     <input type="text" id="inputField">
     <button id="sendButton">Send</button>
+</div>
 
-    <ul id="messageList">
-    {% for message in messages %}
-        <li>{{ message.content }}</li>
-    {% endfor %}
-    </ul>
-</body>
-</html>
+<ul id="messageList">
+</ul>
 

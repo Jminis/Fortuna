@@ -4,15 +4,20 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from .models import GameBox
 
+
 def challenge_view(request):
-    context = { }
+    context = {}
     return render(request, 'challenge/challenge.html', context)
 
-def get_gamebox_data(request):
+
+def get_gamebox_data(request): # 멀티루틴-싱글루틴 처리필요
     challenge_id = request.GET.get('challenge_id')
     team_id = request.GET.get('team_id')
+    print(challenge_id)
+    print(team_id)
     if challenge_id and team_id:
-        gamebox = GameBox.objects.get(id=challenge_id)
+        print(1)
+        gamebox = GameBox.objects.get(team_id=team_id, challenge_id=challenge_id)
         data = {
             'created_at': gamebox.created_at,
             'challenge_id': gamebox.challenge_id,
@@ -29,7 +34,8 @@ def get_gamebox_data(request):
             'is_attacked': gamebox.is_attacked,
         }
     elif team_id:
-        gameboxes = GameBox.objects.filter(team_id=team_id, id=challenge_id)
+        print(2)
+        gameboxes = GameBox.objects.filter(team_id=team_id)
         data = [{
             'created_at': gamebox.created_at,
             'challenge_id': gamebox.challenge_id,
@@ -46,5 +52,6 @@ def get_gamebox_data(request):
             'is_attacked': gamebox.is_attacked,
         } for gamebox in gameboxes]
     else:
+        print(3)
         data = []
     return JsonResponse(data, safe=False)
