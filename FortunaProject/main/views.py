@@ -2,7 +2,7 @@ import json, os
 from django.conf import settings
 from django.shortcuts import render
 from account.models import Team
-
+from log.models import ActionLog
 
 config_path = os.path.join(settings.BASE_DIR, 'config.json')
 with open(config_path, 'r') as config_file:
@@ -17,4 +17,6 @@ def index_view(request):
     return render(request, 'index.html', context)
 
 def play_view(request):
-    return render(request, 'play.html')
+    actions = ActionLog.objects.all().order_by('created_at')[:50]
+    context = {'actions': actions}
+    return render(request, 'play.html', context)
