@@ -1,6 +1,7 @@
 from django.db import models
 
 class ActionLog(models.Model):
+    name = models.CharField(max_length=255, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     team_id = models.CharField(max_length=50)
     challenge_id = models.PositiveIntegerField(null=True, blank=True)
