@@ -3,7 +3,7 @@ from django.db import models
 class GameBox(models.Model):
     created_at = models.DateTimeField(null=True, blank=True)
     challenge_id = models.PositiveIntegerField(null=True, blank=True)
-    team_id = models.CharField(max_length=255, null=True, blank=True)
+    team_id = models.PositiveIntegerField(null=True, blank=True)
     ip = models.CharField(max_length=255, null=True, blank=True)
     port = models.PositiveIntegerField(null=True, blank=True)
     ssh_port = models.PositiveIntegerField(null=True, blank=True)
