@@ -62,7 +62,7 @@
 <ul id="messageList">
     {% for action in actions %}
     <li class="message-container">
-        <div class="message">{{ action.team_id }} attacked by {{ action.attacker_team_id }}</div>
+        <div class="message">{{ action.name }} attacked by {{ action.attacker_team_id }}</div>
         <div class="timestamp">{{ action.created_at|date:"H:i" }}</div>
     </li>
     {% endfor %}

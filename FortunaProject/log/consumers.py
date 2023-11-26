@@ -55,10 +55,10 @@ class LogConsumer(AsyncWebsocketConsumer):
             
             # is_attacked 갱신
             score = await database_sync_to_async(self.update_game_box)(auth_info.team_id, auth_info.challenge_id)
-
+            print(score)
             # score 갱신
             await database_sync_to_async(self.update_team_score)(auth_info.team_id, score)
-
+            print(score)
             #공격 로그 생성
             round = 1
             await database_sync_to_async(self.create_action_log)(auth_info, flag, round)
