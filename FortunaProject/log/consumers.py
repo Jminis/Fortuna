@@ -48,7 +48,7 @@ class LogConsumer(AsyncWebsocketConsumer):
                 auth_info.round
             )
             if existing_log:
-                return "nob"
+                pass
 
             #사용자 입력 로그 갱신
             await database_sync_to_async(self.create_action_try)(user, flag, correct)
@@ -62,7 +62,7 @@ class LogConsumer(AsyncWebsocketConsumer):
             #공격 로그 생성
             round = 1
             await database_sync_to_async(self.create_action_log)(auth_info, flag, round)
-            return f"{auth_info.team_id} attacked by {user}"  # user를 사용해 사용자 이름을 반환
+            return f"{auth_info.name} attacked by {user}"  # user를 사용해 사용자 이름을 반환
         except AuthInfo.DoesNotExist:
             pass
         # ActionTry 인스턴스 생성
@@ -71,6 +71,7 @@ class LogConsumer(AsyncWebsocketConsumer):
     def create_action_log(self, auth_info, flag, round):
         user = self.scope['user']
         ActionLog.objects.create(
+            name=auth_info.name,
             team_id=auth_info.team_id,
             challenge_id=auth_info.challenge_id,
             attacker_team_id=user,
