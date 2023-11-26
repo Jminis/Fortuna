@@ -76,6 +76,7 @@
 <script>
 
     function fetchGameboxData() { // GameBox로부터 데이터를 받아오는 함수
+        console.log({{user}});
         fetch('/challenge/get_challenge_data?team_id={{ user }}')  // 게임 데이터를 불러오는 URL
             .then(response => response.json())
             .then(data => {
