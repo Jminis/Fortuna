@@ -42,7 +42,6 @@
         margin-top: 5px; /* 이미지와 텍스트 사이 간격 */
     }
 </style>
-
 <body>
 {% load static %}
 <!-- 챌린지 목록 -->
@@ -60,9 +59,6 @@
             {% endfor %}
         {% else %}
             <p id="loading-message">게임 데이터를 받아오는 중입니다</p>
-            <script>
-                fetchGameboxData();  // 페이지 로드 시 데이터 요청
-            </script>
         {% endif %}
     </div>
 </div>
@@ -74,10 +70,13 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.0.0-beta1/js/bootstrap.min.js"></script>
 <script>
+    fetchGameboxData();
+    let fetchInterval = setInterval(fetchGameboxData, 1000);  // 1초마다 데이터 요청
 
     function fetchGameboxData() { // GameBox로부터 데이터를 받아오는 함수
-        console.log({{user}});
-        fetch('/challenge/get_challenge_data?team_id={{ user }}')  // 게임 데이터를 불러오는 URL
+        console.log("user name is ", {{user.username}});
+        console.log("user id is ", {{user.team_id}});
+        fetch('/challenge/get_challenge_data?team_id={{ user.team_id }}')  // 게임 데이터를 불러오는 URL
             .then(response => response.json())
             .then(data => {
                 if (data.length > 0) {
@@ -88,8 +87,37 @@
             .catch(error => console.error('Error fetching gamebox data:', error));
     }
 
-    fetchGameboxData();
-    let fetchInterval = setInterval(fetchGameboxData, 1000);  // 1초마다 데이터 요청
+    function updateGameboxButtons(gameboxes) { // 게임박스 버튼 생성 함수
+        const container = document.querySelector('.challenge-row');
+        const test_button = `
+        <div class="challenge-button">
+            <button id="test" onclick="updateGameboxStatus(1, 2, true, true)">Update GameBox</button>
+        </div>
+        <div class="challenge-button">
+            <button id="test" onclick="updateGameboxStatus(1, 2, false, false)">Update GameBox</button>
+        </div>`;
+        container.innerHTML = ''+test_button;  // 기존 내용을 비움
+        gameboxes.forEach(gamebox => {
+            let imageFileName;
+            if (gamebox.is_down == true) {
+                imageFileName = "{% static 'is_down_icon.png' %}";
+            } else if (gamebox.is_attacked == false) {
+                imageFileName = "{% static 'non_attacked_icon.png' %}";
+            } else if (gamebox.is_attacked == true) {
+                imageFileName = "{% static 'is_attacked_icon.png' %}";
+            }
+            console.log(gamebox)
+            const buttonHTML = `
+            <div class="challenge-button">
+                <button id="chall${gamebox.challenge_id}" onclick="openModal('${gamebox.challenge_id}')">
+                    <img src="${imageFileName}" alt="FullState" width="60px" height="120px">
+                    <div>${gamebox.challenge_id}</div>
+                </button>
+            </div>`;
+            console.log(buttonHTML)
+            container.innerHTML += buttonHTML;
+        });
+    }
 
     // 웹소켓 연결 설정
     let challenge_socket = new WebSocket('ws://127.0.0.1:8000/ws/challenge/');
@@ -112,38 +140,11 @@
         console.error('WebSocket error:', error);
     };
 
-    function updateGameboxButtons(gameboxes) { // 게임박스 버튼 생성 함수
-        const container = document.querySelector('.challenge-row');
-        container.innerHTML = '';  // 기존 내용을 비움
-        gameboxes.forEach(gamebox => {
-            let imageFileName;
-            if (gamebox.is_down == false && gamebox.is_attacked == false) {
-                imageFileName = "{% static 'non_attacked_icon.png' %}";
-            } else if (gamebox.is_down == true && gamebox.is_attacked == false) {
-                imageFileName = "{% static 'is_down_icon.png' %}";
-            } else if (gamebox.is_down == false && gamebox.is_attacked == true) {
-                imageFileName = "{% static 'is_attacked_icon.png' %}";
-            } else {
-                imageFileName = "{% static 'is_down_attacked_icon.png' %}";
-            }
-            console.log(gamebox)
-            const buttonHTML = `
-            <div class="challenge-button">
-                <button id="chall${gamebox.challenge_id}" onclick="openModal('${gamebox.challenge_id}')">
-                    <img src="${imageFileName}" alt="FullState" width="60px" height="120px">
-                    <div>${gamebox.challenge_id}</div>
-                </button>
-            </div>`;
-            console.log(buttonHTML)
-            container.innerHTML += buttonHTML;
-        });
-    }
-
     function openModal(challengeId) { // 모달 열기 함수
         // AJAX 요청
-        var url = `/challenge/get_challenge_data?challenge_id=${challengeId}&team_id={{ user }}`
+        var url = `/challenge/get_challenge_data?challenge_id=${challengeId}&team_id={{ user.team_id }}`
         console.log(challengeId)
-        fetch(`/challenge/get_challenge_data?challenge_id=${challengeId}&team_id={{ user }}`)
+        fetch(`/challenge/get_challenge_data?challenge_id=${challengeId}&team_id={{ user.team_id }}`)
             .then(response => response.json())
             .then(data => {
                 // 모달 내용 업데이트
@@ -166,6 +167,47 @@
         var modal = document.getElementById("myModal");
         modal.style.display = "none";
     }
+
+
+    function updateGameboxStatus(teamId, challengeId, isDown, isAttacked) {
+        // AJAX 요청을 사용하여 서버에 데이터를 보냄
+        fetch('/challenge/update_gamebox_status', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken') // CSRF 토큰 추가
+            },
+            body: JSON.stringify({
+                team_id: teamId,
+                challenge_id: challengeId,
+                is_down: isDown,
+                is_attacked: isAttacked
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
 </script>
 </body>
 </html>
