@@ -99,14 +99,12 @@
         container.innerHTML = ''+test_button;  // 기존 내용을 비움
         gameboxes.forEach(gamebox => {
             let imageFileName;
-            if (gamebox.is_down == false && gamebox.is_attacked == false) {
-                imageFileName = "{% static 'non_attacked_icon.png' %}";
-            } else if (gamebox.is_down == true && gamebox.is_attacked == false) {
+            if (gamebox.is_down == true) {
                 imageFileName = "{% static 'is_down_icon.png' %}";
-            } else if (gamebox.is_down == false && gamebox.is_attacked == true) {
+            } else if (gamebox.is_attacked == false) {
+                imageFileName = "{% static 'non_attacked_icon.png' %}";
+            } else if (gamebox.is_attacked == true) {
                 imageFileName = "{% static 'is_attacked_icon.png' %}";
-            } else {
-                imageFileName = "{% static 'is_down_attacked_icon.png' %}";
             }
             console.log(gamebox)
             const buttonHTML = `
