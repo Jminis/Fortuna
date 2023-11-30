@@ -47,8 +47,12 @@ class LogConsumer(AsyncWebsocketConsumer):
                 user,  # attacker_team_id로 가정합니다.
                 auth_info.round
             )
+            # 이미 제출된 플래그일 경우
             if existing_log:
-                pass
+                await self.send(text_data=json.dumps({'toast': "이미 제출된 플래그입니다!"}))
+                return
+
+            await self.send(text_data=json.dumps({'toast': f"You attacked {auth_info.team_id}"}))
 
             #사용자 입력 로그 갱신
             await database_sync_to_async(self.create_action_try)(user, flag, correct)

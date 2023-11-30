@@ -3,7 +3,13 @@ let socket = new WebSocket('ws://127.0.0.1:8000/ws/log/');
 socket.onmessage = function(event) {
     console.log("Log WebSocket connected!");
     let data = JSON.parse(event.data);
-    addMessageToPage(data.data);  // 서버로부터의 응답을 페이지에 표시
+    
+    if (data.toast) {
+        showToast(data.toast);
+    } else {
+        addMessageToPage(data.data);
+    }
+
 };
 
 
