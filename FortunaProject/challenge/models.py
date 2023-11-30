@@ -1,4 +1,6 @@
+#challenge/models.py
 from django.db import models
+from account.models import Team # Account - Team 모델 / 유저 정보 가져오기
 
 class GameBox(models.Model):
     created_at = models.DateTimeField(null=True, blank=True)
