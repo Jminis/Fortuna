@@ -73,6 +73,8 @@
     fetchGameboxData();
     let fetchInterval = setInterval(fetchGameboxData, 1000);  // 1초마다 데이터 요청
 
+    const staticBaseUrl = "{% static '' %}";
+
     function fetchGameboxData() { // GameBox로부터 데이터를 받아오는 함수
         console.log("user name is ", {{user.username}});
         console.log("user id is ", {{user.team_id}});
@@ -98,23 +100,23 @@
         </div>`;
         container.innerHTML = ''+test_button;  // 기존 내용을 비움
         gameboxes.forEach(gamebox => {
-            let imageFileName;
+            let background_color_style;
             if (gamebox.is_down == true) {
-                imageFileName = "{% static 'is_down_icon.png' %}";
+                background_color_style = "background-color: yellow;";
             } else if (gamebox.is_attacked == false) {
-                imageFileName = "{% static 'non_attacked_icon.png' %}";
+                background_color_style = "background-color: white;";
             } else if (gamebox.is_attacked == true) {
-                imageFileName = "{% static 'is_attacked_icon.png' %}";
+                background_color_style = "background-color: red;";
             }
             console.log(gamebox)
+            let imageFileName = `{% static 'chall${gamebox.challenge_id}' %}`;
             const buttonHTML = `
             <div class="challenge-button">
-                <button id="chall${gamebox.challenge_id}" onclick="openModal('${gamebox.challenge_id}')">
-                    <img src="${imageFileName}" alt="FullState" width="60px" height="120px">
-                    <div>${gamebox.challenge_id}</div>
+                <button id="chall${gamebox.challenge_id}" onclick="openModal('${gamebox.challenge_id}')" style="${background_color_style}">
+                    <img src="${staticBaseUrl}chall${gamebox.challenge_id}.png" alt="FullState" width="60px" height="120px">
                 </button>
+                <div>${gamebox.challenge_id}</div>
             </div>`;
-            console.log(buttonHTML)
             container.innerHTML += buttonHTML;
         });
     }
