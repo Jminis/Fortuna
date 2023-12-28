@@ -59,19 +59,18 @@ function addMessageToPage(message, timestamp) {
     messageList.appendChild(messageContainer);
 }
 
-// 토스트 메시지 표시 함수
 function showToast(message) {
     let toast = document.createElement("div");
     toast.className = "toast-message";
     toast.textContent = message;
 
-    // 'rounded-card bg-white p-3 mb-3' 클래스를 가진 요소를 찾기
-    let container = document.querySelector('.rounded-card.bg-white.p-3.mb-3');
-    if (container) {
-        // 컨테이너의 직후에 토스트 메시지 추가
-        container.insertAdjacentElement('afterend', toast);
+    // 왼쪽 컬럼의 첫 번째 요소를 선택
+    let leftColumn = document.getElementById('leftColumn');
+    if (leftColumn) {
+        // 왼쪽 컬럼의 가장 상단에 토스트 메시지 추가
+        leftColumn.insertBefore(toast, leftColumn.firstChild);
     } else {
-        console.error('Container for toast not found');
+        console.error('Left column not found');
         return;
     }
 
