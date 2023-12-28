@@ -57,15 +57,15 @@
     text-align: center;
     border-radius: 10px; /* 모서리 둥글게 */
     padding: 16px;
-    position: relative; /* 상대적 위치 */
+    position: absolute; /* 상대적 위치 */
     margin-top: 10px; /* 상단 여백 */
     font-size: 17px;
-    /* 가운데 정렬을 위한 스타일 */
-    left: 50%;
     transform: translateX(-50%);
     /* 컨테이너 너비에 맞게 조절 */
     width: calc(100% - 20px);
     box-sizing: border-box;
+    top: -70px;
+    left: 300px;
 }
 
 /* 토스트 메시지 보이기 */
@@ -94,9 +94,6 @@
     from {bottom: 30px; opacity: 1;}
     to {bottom: 0; opacity: 0;}
 }
-
-
-
 
 
 </style>
