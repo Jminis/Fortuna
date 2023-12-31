@@ -61,7 +61,6 @@
     margin-top: 10px; /* 상단 여백 */
     font-size: 17px;
     transform: translateX(-50%);
-    /* 컨테이너 너비에 맞게 조절 */
     width: calc(100% - 20px);
     box-sizing: border-box;
     top: -70px;
@@ -71,7 +70,7 @@
 /* 토스트 메시지 보이기 */
 .toast-message.show {
     visibility: visible;
-    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    -webkit-animation: fadein 2s, fadeout 2s 2.5s;
     animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
 
@@ -80,19 +79,21 @@
     to {bottom: 30px; opacity: 1;}
 }
 
-@keyframes fadein {
-    from {bottom: 0; opacity: 0;}
-    to {bottom: 30px; opacity: 1;}
-}
+
 
 @-webkit-keyframes fadeout {
     from {bottom: 30px; opacity: 1;} 
     to {bottom: 0; opacity: 0;}
 }
 
+@keyframes fadein {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 @keyframes fadeout {
-    from {bottom: 30px; opacity: 1;}
-    to {bottom: 0; opacity: 0;}
+    from { opacity: 1; }
+    to { opacity: 0; }
 }
 
 
