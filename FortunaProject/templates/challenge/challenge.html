@@ -1,11 +1,5 @@
 <!-- challenge.html -->
 <!DOCTYPE HTML>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>테스트용 challenge.html</title>
-</head>
-
 <style>
     .challenge-row {
         display: flex;
@@ -13,6 +7,7 @@
     }
 
     .challenge-button {
+        flex: 1;
         display: flex;
         flex-direction: column; /* 요소를 세로로 정렬 */
         align-items: center; /* 중앙 정렬 */
@@ -40,10 +35,26 @@
     .challenge-button button {
         font-size: 14px; /* 텍스트 크기 */
         margin-top: 5px; /* 이미지와 텍스트 사이 간격 */
+        border: 2px solid #ddd; /* 테두리 색상 */
+        border-radius: 10px; /* 둥근 모서리 */
+        padding: 15px; /* 내부 여백 */
+        margin: 10px; /* 주변 여백 */
     }
+
+    @media (max-width: 768px) {
+        .challenge-button {
+            flex-basis: 100%;
+        }
+    }
+
 </style>
-<body>
 {% load static %}
+<div class="challenge-button">
+    <button id="test" onclick="updateGameboxStatus(1, 2, true, true)">Update GameBox</button>
+</div>
+<div class="challenge-button">
+    <button id="test" onclick="updateGameboxStatus(1, 2, false, false)">Update GameBox</button>
+</div>`;
 <!-- 챌린지 목록 -->
 <div class="challenge-list">
     <h2>Challenges</h2>
@@ -91,31 +102,25 @@
 
     function updateGameboxButtons(gameboxes) { // 게임박스 버튼 생성 함수
         const container = document.querySelector('.challenge-row');
-        const test_button = `
-        <div class="challenge-button">
-            <button id="test" onclick="updateGameboxStatus(1, 2, true, true)">Update GameBox</button>
-        </div>
-        <div class="challenge-button">
-            <button id="test" onclick="updateGameboxStatus(1, 2, false, false)">Update GameBox</button>
-        </div>`;
+        const test_button = ``;
         container.innerHTML = ''+test_button;  // 기존 내용을 비움
         gameboxes.forEach(gamebox => {
             let background_color_style;
             if (gamebox.is_down == true) {
-                background_color_style = "background-color: yellow;";
+                background_color_style = "background-color: #ffc107;";
             } else if (gamebox.is_attacked == false) {
-                background_color_style = "background-color: white;";
+                background_color_style = "background-color: #28a745;";
             } else if (gamebox.is_attacked == true) {
-                background_color_style = "background-color: red;";
+                background_color_style = "background-color: #dc3545;";
             }
             console.log(gamebox)
             let imageFileName = `{% static 'chall${gamebox.challenge_id}' %}`;
             const buttonHTML = `
             <div class="challenge-button">
+                <div>${gamebox.challenge_id}</div>
                 <button id="chall${gamebox.challenge_id}" onclick="openModal('${gamebox.challenge_id}')" style="${background_color_style}">
                     <img src="${staticBaseUrl}chall${gamebox.challenge_id}.png" alt="FullState" width="60px" height="120px">
                 </button>
-                <div>${gamebox.challenge_id}</div>
             </div>`;
             container.innerHTML += buttonHTML;
         });
@@ -211,5 +216,3 @@
     }
 
 </script>
-</body>
-</html>
