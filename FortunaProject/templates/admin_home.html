@@ -1,8 +1,31 @@
+<!DOCTYPE html>
 <html>
 <head>
     <style>
-        {% load static %} <!-- Static 파일 로드 -->
-        .icon, .label, .left-container, .footer {
+        /* 추가된 사이드바 및 콘텐츠 영역 스타일링 */
+        .container {
+            display: flex;
+            height: 100%;
+        }
+
+        .left-container {
+            width: 140px; /* 사이드바 너비 */
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background-color: #333;
+            box-sizing: border-box;
+            overflow-y: auto; /* 필요 시 스크롤바 추가 */
+        }
+
+        .right-content {
+            flex-grow: 1;
+            margin-left: 140px; /* 왼쪽 사이드바 너비만큼 여백 */
+            padding: 20px;
+        }
+
+        .icon, .label, .footer {
             box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25); /* 그림자 추가 */
         }
         
@@ -42,28 +65,17 @@
             transition: all 0.3s ease;
             white-space: nowrap;
             overflow: hidden;
-            width: 80px; /* 기본 너비를 60px로 설정 */
+            width: 80px; /* 기본 너비 */
         }
         
         .nav-item:hover .label {
-            width: 140px;
-        }
-
-        .left-container {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 130px;
-            height: 100%;
-            background-color: #333;
-            box-sizing: border-box;
-            /* 필요한 추가 스타일 */
+            width: 140px; /* 호버 시 라벨 확장 */
         }
 
         .footer {
             position: absolute;
             bottom: 0;
-            width: 100%;
+            width: 140px; /* 사이드바 너비와 동일 */
             text-align: center;
             color: white;
             padding: 10px 0;
@@ -71,66 +83,40 @@
             box-sizing: border-box;
             font-size: 12px;
         }
-
-        .navigation-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            height: 55px; /* 예시 높이, 필요에 따라 조정 */
-        }
-
-        .nav-logo img {
-            max-height: 55px;
-            width: auto;
-        }
-
-        .nav-menu {
-            display: flex; /* Flexbox를 사용 */
-            align-items: center; /* 항목들을 세로 중앙에 정렬 */
-            height: 100%; /* 네비게이션 바의 전체 높이를 사용 */
-        }
-
-        .nav-item a {
-            display: block; /* 블록 레벨 요소로 설정 */
-            color: inherit; /* 링크의 색상을 상속받음 */
-            text-decoration: none; /* 기본 링크 밑줄 제거 */
-        }
-
-        /* 네비게이션 바 아래에 본문이 시작되도록 여백 추가 */
-        #content {
-            padding-top: 55px; /* 네비게이션 바 높이에 맞춰 조정 */
-        }
     </style>
 </head>
 <body>
-    <div class="left-container">
-        <!-- 여기에 컨테이너 내용 추가 -->
-        <div class="navbar">
-            <div class="nav-item">
-                <div class="icon"></div>
-                <div class="label">Home</div>
+    <div class="container">
+        <div class="left-container">
+            <div class="navbar">
+                <div class="nav-item">
+                    <div class="icon"></div>
+                    <div class="label">Home</div>
+                </div>
+                <div class="nav-item">
+                    <div class="icon"></div>
+                    <div class="label">Profile</div>
+                </div>
+                <div class="nav-item">
+                    <div class="icon"></div>
+                    <div class="label">Messages</div>
+                </div>
+                <div class="nav-item">
+                    <div class="icon"></div>
+                    <div class="label">Settings</div>
+                </div>
+                <div class="nav-item">
+                    <div class="icon"></div>
+                    <div class="label">Logout</div>
+                </div>
             </div>
-            <div class="nav-item">
-                <div class="icon"></div>
-                <div class="label">Profile</div>
-            </div>
-            <div class="nav-item">
-                <div class="icon"></div>
-                <div class="label">Messages</div>
-            </div>
-            <div class="nav-item">
-                <div class="icon"></div>
-                <div class="label">Settings</div>
-            </div>
-            <div class="nav-item">
-                <div class="icon"></div>
-                <div class="label">Logout</div>
+            <div class="footer">
+                Powered by Fortuna
             </div>
         </div>
-        <div class="footer">
-            Powered by Fortuna
+        <div class="right-content">
+            {% block content %}
+            {% endblock content %}
         </div>
     </div>
 </body>
