@@ -1,0 +1,53 @@
+{% extends 'manager/manager_base.html' %}
+
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .right-container {
+        position: fixed;
+        left: 130px; /* left-container의 너비만큼 오른쪽으로 이동 */
+        top: 0;
+        right: 0; /* 오른쪽 끝까지 확장 */
+        background-color: #f0f0f0; /* 배경색 */
+        box-sizing: border-box;
+        padding: 10px;
+        overflow-y: auto; /* 내용이 많을 경우 스크롤바 표시 */
+    }
+
+    .right-button, .right-content {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .right-button {
+        width: 140px;
+        padding: 5px 10px;
+        background-color: mediumslateblue; /* 버튼 색상 */
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 10px auto;
+        display: block;
+    }
+
+    .right-content {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        padding: 10px;
+        height: 100px; /* 임시 높이 */
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+    }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<div class="right-container">
+    <div class="right-button">Challenge Create</div>
+    <div class="right-content">Plz, Create Challenges...</div>
+    <div class="right-button">Gamebox Status</div>
+    <div class="right-content">Plz, Make Gameboxes...</div>
+</div>
+{% endblock content %}

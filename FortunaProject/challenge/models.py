@@ -5,6 +5,7 @@ from account.models import Team # Account - Team 모델 / 유저 정보 가져�
 class GameBox(models.Model):
     created_at = models.DateTimeField(null=True, blank=True)
     challenge_id = models.PositiveIntegerField(null=True, blank=True)
+    challenge_name = models.CharField(max_length=255, null=True, blank=True)
     team_id = models.PositiveIntegerField(null=True, blank=True)
     ip = models.CharField(max_length=255, null=True, blank=True)
     port = models.PositiveIntegerField(null=True, blank=True)
