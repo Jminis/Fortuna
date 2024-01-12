@@ -81,3 +81,76 @@ def get_gamebox_data(request): # 멀티루틴-싱글루틴 처리필요
     else:
         data = []
     return JsonResponse(data, safe=False)
+
+def create_gamebox(request):
+    if request.method == "POST":
+        challenge_id = request.POST.get('challenge_id')
+        challenge_name = request.POST.get('challenge_name')
+        team_id = request.POST.get('team_id')
+        ip = request.POST.get('ip')
+        post = request.POST.get('post')
+        ssh_port = request.POST.get('ssh_port')
+        ssh_user = request.POST.get('ssh_user')
+        ssh_password = request.POST.get('ssh_password')
+        description = request.POST.get('description')
+        visible = True
+        score = 0
+        is_down = False
+        is_attacked = False
+        
+        gamebox = GameBox(
+            challenge_id=challenge_id,
+            challenge_name=challenge_name,
+            team_id=team_id,
+            ip = ip,
+            post = post,
+            ssh_port = ssh_port,
+            ssh_user = ssh_user,
+            ssh_password = ssh_password,
+            description = description,
+            visible = visible,
+            score = score,
+            is_down = is_down,
+            is_attacked = is_attacked,
+        )
+        gamebox.save()
+        return redirect('manager/manager_challenge.html')
+
+    return render(request, 'manager/manager_challenge.html')
+
+def read_gamebox(request):
+    gameboxes = GameBox.objects.all()
+    return render(request, 'manager/manager_challenge.html', {'gameboxes': gameboxes})
+
+def update_gamebox(request, id):
+    gamebox = get_object_or_404(GameBox, pk=id)
+
+    if request.method == "POST":
+        challenge_id = request.POST.get('challenge_id')
+        challenge_name = request.POST.get('challenge_name')
+        team_id = request.POST.get('team_id')
+        ip = request.POST.get('ip')
+        post = request.POST.get('post')
+        ssh_port = request.POST.get('ssh_port')
+        ssh_user = request.POST.get('ssh_user')
+        ssh_password = request.POST.get('ssh_password')
+        description = request.POST.get('description')
+        visible = request.POST.get('visible')
+        score = request.POST.get('score')
+        is_down = request.POST.get('is_down')
+        is_attacked = request.POST.get('is_attacked')
+
+        gamebox.save()
+        return redirect('manager/manager_challenge.html')
+
+    return render(request, 'manager/manager_challenge.html', {'gamebox': gamebox})
+
+
+def delete_gamebox(request, id):
+    gamebox = get_object_or_404(GameBox, pk=id)
+    
+    if request.method == "POST":
+        gamebox.delete()
+        return redirect('manager/manager_challenge.html')
+
+    return render(request, 'manager/manager_challenge.html', {'gamebox': gamebox})

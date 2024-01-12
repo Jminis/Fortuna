@@ -5,6 +5,12 @@
         .icon, .label, .left-container, .footer {
             box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25); /* 그림자 추가 */
         }
+
+        .right-content {
+            flex-grow: 1;
+            margin-left: 140px; /* 왼쪽 사이드바 너비만큼 여백 */
+            padding: 20px;
+        }
         
         .navbar {
             position: fixed;
@@ -143,9 +149,8 @@
             Powered by Fortuna
         </div>
     </nav>
-
     <!-- 본문 컨텐츠 -->
-    <div id="content">
+    <div id="right-content">
         {% block content %}
         {% endblock content %}
     </div>
