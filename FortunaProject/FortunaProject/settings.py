@@ -60,6 +60,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'adminpage',
+    'admin_flag',
     'status',
     'notice',
     'rank',
