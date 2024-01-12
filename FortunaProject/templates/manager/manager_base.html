@@ -1,0 +1,161 @@
+{% load static %}
+<html>
+<head>
+    <style>
+        .icon, .label, .left-container, .footer {
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25); /* 그림자 추가 */
+        }
+
+        .right-content {
+            flex-grow: 1;
+            margin-left: 140px; /* 왼쪽 사이드바 너비만큼 여백 */
+            padding: 20px;
+        }
+        
+        .navbar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 130px; /* 네비게이션 바의 너비 */
+            height: 100%; /* 전체 높이 */
+            background-color: #333; /* 배경색 */
+            padding: 10px 0px; /* 패딩 */
+            box-sizing: border-box;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column; /* 컨텐츠를 세로로 정렬 */
+            height: 100%; /* 전체 높이 */
+        }
+
+        .navbar-content {
+            flex: 1; /* 나머지 공간을 차지하도록 설정 */
+            display: flex;
+            flex-direction: column; /* 세로 정렬 */
+            justify-content: flex-start; /* 시작 부분에 정렬 */
+        }
+
+        .nav-logo {
+            padding: 0px 5px;
+            display: flex;
+            justify-content: center; /* 수평 중앙 정렬 */
+            align-items: center; /* 수직 중앙 정렬 */
+            width: 100%; /* 너비를 100%로 설정 */
+            margin: 0; /* 마진 제거 */
+            padding: 0; /* 패딩 제거 */
+        }
+
+        .nav-logo img {
+            padding: 0px 5px;
+            max-width: 90%; /* 로고 이미지가 네비게이션 바 너비를 초과하지 않도록 */
+            height: auto;
+        }
+        
+        .nav-menu {
+            list-style: none; /* 리스트 스타일 제거 */
+            margin: 0;
+            padding: 0px 5px;
+            display: flex;
+            flex-direction: column; /* 세로 방향으로 메뉴 정렬 */
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .nav-item a {
+            color: white;
+            text-decoration: none; /* 링크 밑줄 제거 */
+            padding: 10px; /* 링크에 패딩 추가 */
+            display: block; /* 블록 요소로 변경 */
+        }
+
+        .nav-item:hover {
+            background-color: #555; /* 호버 효과 */
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            color: white;
+            padding: 10px 0;
+            border-top: 1px solid #555;
+            box-sizing: border-box;
+            font-size: 12px;
+        }
+        
+        .icon {
+            width: 25px;
+            height: 25px;
+            background-color: #777;
+            border-radius: 50%;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .label {
+            height: 25px;
+            line-height: 25px;
+            background-color: #777;
+            color: white;
+            padding: 0 10px;
+            transform: skewX(-20deg);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 80px; /* 기본 너비를 60px로 설정 */
+        }
+
+        .label-expanded {
+            width: 140px; /* 확장된 너비 */
+        }
+        
+        .nav-item:hover .label {
+            width: 140px;
+        }
+
+        .left-container {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 130px;
+            height: 100%;
+            background-color: #333;
+            box-sizing: border-box;
+            /* 필요한 추가 스타일 */
+        }
+    </style>
+    {% block extra_css %}{% endblock extra_css %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-logo">
+            <a href="/manager">
+                <img src={% static 'demologo.png' %} alt="logo">
+            </a>
+        </div>
+        <div class="nav-menu">
+            <li class="nav-item"><a href="/manager/">Home</a></li>
+            <li class="nav-item"><a href="/manager/challenge">Challenge</a></li>
+            <li class="nav-item"><a href="/manager/challenge">Challenge</a></li>
+            <li class="nav-item"><a href="/manager/challenge">Challenge</a></li>
+            <li class="nav-item"><a href="/manager/challenge">Challenge</a></li>
+        </div>
+        <div class="footer">
+            Powered by Fortuna
+        </div>
+    </nav>
+    <!-- 본문 컨텐츠 -->
+    <div id="right-content">
+        {% block content %}
+        {% endblock content %}
+    </div>
+
+    <!-- 페이지별 추가 JavaScript -->
+    {% block extra_js %}{% endblock extra_js %}
+</body>
+</html>

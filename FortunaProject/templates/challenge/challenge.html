@@ -54,7 +54,7 @@
 </div>
 <div class="challenge-button">
     <button id="test" onclick="updateGameboxStatus(1, 2, false, false)">Update GameBox</button>
-</div>`;
+</div>
 <!-- 챌린지 목록 -->
 <div class="challenge-list">
     <h2>Challenges</h2>
@@ -155,15 +155,15 @@
             .then(response => response.json())
             .then(data => {
                 // 모달 내용 업데이트
-                document.querySelector('#myModal .modal-container-title').textContent = data.challenge_id;
+                document.querySelector('#myModal .modal-container-title').textContent = data.challenge_name;
                 document.querySelector('#myModal .modal-container-body').innerHTML = `
-                    <p>문제 설명</p>
+                    <h2>문제 설명</h2><br>
                     <p>${data.description}</p>
+                    <br>
                     <div>score: ${data.score}</div>
+                    <div>접속정보 = ${data.ip}:${data.port}</div>
                 `;
-                document.querySelector('#myModal .modal-container-footer').textContent = `
-                    접속정보 = ${data.ip}:${data.port}
-                `;
+                document.querySelector('#myModal .modal-container-footer').innerHTML = ``;
                 // 모달 표시
                 var modal = document.getElementById("myModal");
                 modal.style.display = "block";

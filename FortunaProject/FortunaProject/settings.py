@@ -59,7 +59,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'adminpage',
+    'manager',
     'status',
     'notice',
     'rank',
@@ -68,7 +68,6 @@ INSTALLED_APPS = [
     'main',
     'challenge',
     'authentication',
-    'widget_tweaks',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
