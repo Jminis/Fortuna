@@ -13,7 +13,6 @@ def gamebox_post_save(sender, instance, created, **kwargs):
         pass
     else: # 데이터 인스턴스 업데이트에 대한 시그널
         previous_instance = GameBox.objects.get(id=instance.id)
-        print(previous_instance)
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             "challenge_group",  # 웹소켓 그룹 이름

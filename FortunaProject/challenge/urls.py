@@ -5,4 +5,5 @@ urlpatterns = [
     path('', views.challenge_view, name='challenge'),
     path('get_challenge_data',views.get_gamebox_data),
     path('update_gamebox_status',views.update_gamebox_status),
+    path('read',views.read_gamebox, name='read_gamebox'),
 ]
