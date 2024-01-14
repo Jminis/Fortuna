@@ -6,9 +6,9 @@ from authentication.models import AuthInfo
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
-def admin_flag_view(request):
+def flag_view(request):
     flags = AuthInfo.objects.all()  # 모든 AuthInfo 인스턴스를 가져옵니다.
-    return render(request, 'admin_flag/admin_flag.html', {'flags': flags})
+    return render(request, 'flag/flag.html', {'flags': flags})
 
 
 def create_flag():
@@ -27,7 +27,7 @@ def create_flag():
 
 def create_flag_view(request):
     create_flag()  # 플래그 생성
-    return HttpResponseRedirect(reverse('admin_flag'))  # 플래그 관리 페이지로 리다이렉트
+    return HttpResponseRedirect(reverse('flag'))  # 플래그 관리 페이지로 리다이렉트
 
 def get_round_info():
     # 라운드 정보를 반환하는 함수

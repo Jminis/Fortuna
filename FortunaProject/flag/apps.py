@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class ManagerConfig(AppConfig):
+class AdminFlagConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'manager'
+    name = 'flag'

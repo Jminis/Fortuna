@@ -1,24 +1,23 @@
-# account/forms.py
 from django import forms
 from .models import Team
 
-# html에서 form.as_p 이런 식으로 사용하면 <p> 태그로 가져올 수 있다는데...
-#class LoginForm(forms.Form):
-#    name = forms.CharField(label='Team Name', max_length=255)
-#    password = forms.CharField(widget=forms.PasswordInput, label='Password')
-
-class SignupForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
-    password_confirm = forms.CharField(widget=forms.PasswordInput, label='Confirm password')
+class TeamCreationForm(forms.ModelForm):
+    
 
     class Meta:
         model = Team
-        fields = ['name', 'password']
+        fields = ['name', 'score', 'secret_key', 'team_id', 'token', 'is_staff']
+        
 
-    def clean(self):
-        cleaned_data = super().clean()
-        password = cleaned_data.get("password")
-        password_confirm = cleaned_data.get("password_confirm")
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Team Name'}),
+            'score': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Score'}),
+            'secret_key': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Secret Key'}),
+            'team_id': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Team ID'}),
+            'token': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Token'}),
+            'is_staff': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            
+        }
 
-        if password != password_confirm:
-            self.add_error('password_confirm', "Passwords do not match")
+    # 필요한 경우, 여기에 추가적인 유효성 검사 메서드를 정의할 수 있습니다.
+    # 예: def clean_<fieldname>(self):

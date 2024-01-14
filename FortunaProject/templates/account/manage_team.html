@@ -1,0 +1,71 @@
+{% extends 'manage/base.html' %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Left: Team creation form -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center">Create Team</h2>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="form-group">
+                            <label for="logo">Team Logo:</label>
+                            <input type="file" id="logo" name="logo" class="form-control-file">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Team</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Displaying list of teams -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center">Existing Teams</h2>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>TeamID</th>
+                                    <th>Logo</th>
+                                    <th>Score</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for team in teams %}
+                                    <tr>
+                                        <td>{{ team.name }}</td>
+                                        <td>{{ team.team_id }}</td>
+                                        <td><img src="{{ team.logo.url }}" alt="{{ team.name }} Logo" style="height: 50px;"></td>
+                                        <td>{{ team.score }}</td>
+                                        <td>
+                                            <form method="post" action="{% url 'delete_team' team.id %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('.toast').toast('show');
+    });
+</script>
+
+{% endblock %}

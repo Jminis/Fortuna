@@ -59,12 +59,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-<<<<<<< HEAD
-    'adminpage',
-    'admin_flag',
-=======
-    'manager',
->>>>>>> main
+    'manage',
     'status',
     'notice',
     'rank',

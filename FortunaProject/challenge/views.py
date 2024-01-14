@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from .models import GameBox
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.http import JsonResponse
 from .models import GameBox
 import json
@@ -114,13 +114,13 @@ def create_gamebox(request):
             is_attacked = is_attacked,
         )
         gamebox.save()
-        return redirect('manager/manager_challenge.html')
+        return redirect('challenge/manage_challenge.html')
 
-    return render(request, 'manager/manager_challenge.html')
+    return render(request, 'challenge/manage_challenge.html')
 
 def read_gamebox(request):
     gameboxes = GameBox.objects.all()
-    return render(request, 'manager/manager_challenge.html', {'gameboxes': gameboxes})
+    return render(request, 'challenge/manage_challenge.html', {'gameboxes': gameboxes})
 
 def update_gamebox(request, id):
     gamebox = get_object_or_404(GameBox, pk=id)
@@ -141,9 +141,9 @@ def update_gamebox(request, id):
         is_attacked = request.POST.get('is_attacked')
 
         gamebox.save()
-        return redirect('manager/manager_challenge.html')
+        return redirect('challenge/manage_challenge.html')
 
-    return render(request, 'manager/manager_challenge.html', {'gamebox': gamebox})
+    return render(request, 'challenge/manage_challenge.html', {'gamebox': gamebox})
 
 
 def delete_gamebox(request, id):
@@ -151,6 +151,6 @@ def delete_gamebox(request, id):
     
     if request.method == "POST":
         gamebox.delete()
-        return redirect('manager/manager_challenge.html')
+        return redirect('challenge/manage_challenge.html')
 
-    return render(request, 'manager/manager_challenge.html', {'gamebox': gamebox})
+    return render(request, 'challenge/manage_challenge.html', {'gamebox': gamebox})
