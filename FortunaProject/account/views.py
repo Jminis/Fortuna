@@ -4,9 +4,11 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from .forms import TeamCreationForm
 from .models import Team
+from django.template.loader import render_to_string
 
 # Config 파일 로드
 config_path = os.path.join(settings.BASE_DIR, 'config.json')
@@ -60,19 +62,27 @@ def update_team_view(request, team_id):
     try:
         team = Team.objects.get(id=team_id)
     except Team.DoesNotExist:
-        messages.error(request, 'Team not found.')
-        return redirect('manage_team')
+        return JsonResponse({'error': 'Team not found'}, status=404)
 
     if request.method == 'POST':
         form = TeamCreationForm(request.POST, request.FILES, instance=team)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Team updated successfully!')
-            return redirect('manage_team')
-    else:
-        form = TeamCreationForm(instance=team)
+            return JsonResponse({'message': 'Team updated successfully'})
+        else:
+            return JsonResponse({'error': form.errors}, status=400)
+        
+@login_required
+def update_team_form(request, team_id):
+    try:
+        team = Team.objects.get(id=team_id)
+    except Team.DoesNotExist:
+        return JsonResponse({'error': 'Team not found'}, status=404)
 
-    return render(request, 'account/update_team.html', {'form': form, 'team_id': team_id})
+    form = TeamCreationForm(instance=team)
+    # 폼을 HTML로 렌더링합니다. 이 HTML은 AJAX 요청에 대한 응답으로 사용됩니다.
+    form_html = render_to_string('account/team_form.html', {'form': form}, request)
+    return JsonResponse({'form_html': form_html})
 
 def logout_view(request):
     logout(request)
