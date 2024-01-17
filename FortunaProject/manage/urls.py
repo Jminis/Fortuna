@@ -26,6 +26,7 @@ urlpatterns = [
     path('flag/create_flag/', flag.create_flag_view, name='create_flag'),
     path('flag/export_authinfo/', flag.export_authinfo_to_txt, name='export_authinfo'),
     path('flag/chall_round_view', flag.flag_view, name='flag_view'),
-    path('create_one_flag/<int:gamebox_id>/<int:round_info>/', flag.create_one_flag, name='create_one_flag'),
+    path('create_one_flag/<int:team_id>/<int:challenge_id>/', flag.create_one_flag, name='create_one_flag'),
+
 ]
 

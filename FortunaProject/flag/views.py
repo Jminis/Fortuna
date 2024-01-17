@@ -13,55 +13,75 @@ def flag_view(request):
     round = 2  # 현재 라운드 임시 설정
     round_info = AuthInfo.objects.filter(round=round)  # 현재 라운드의 AuthInfo 인스턴스를 가져옵니다.
 
-    # 각 AuthInfo 객체에 대응하는 GameBox 객체 찾기
-    gamebox_info = {}
+        # 각 AuthInfo 객체에 해당하는 GameBox ID를 저장할 리스트를 생성합니다.
+    round_info_with_gamebox = []
     for info in round_info:
         try:
+            # 해당하는 GameBox 인스턴스를 가져옵니다.
             gamebox = GameBox.objects.get(challenge_id=info.challenge_id, team_id=info.team_id)
-            gamebox_info[info.id] = gamebox.id
+            # AuthInfo 객체에 gamebox 인스턴스를 직접 추가합니다.
+            info.gamebox = gamebox
         except GameBox.DoesNotExist:
-            gamebox_info[info.id] = None
+            # GameBox 인스턴스가 존재하지 않는 경우
+            info.gamebox = None
+        
+        # 수정된 AuthInfo 객체를 리스트에 추가합니다.
+        round_info_with_gamebox.append(info)
 
+    # 갱신된 round_info 리스트와 나머지 컨텍스트를 템플릿에 전달합니다.
     return render(request, 'flag/flag.html', {
         'auth_info': auth_info,
-        'gamebox_info': gamebox_info,  # 추가된 정보
+        'round_info': round_info_with_gamebox,
         'round': round,
-        'round_info': round_info
     })
 
-def create_one_flag(gamebox, round_info):
-    # 플래그 생성 로직
-    salt = secrets.token_hex(8)
-    raw_flag = f"{round_info}{gamebox.challenge_id}{salt}"
-    hashed_flag = hashlib.sha256(raw_flag.encode()).hexdigest()
-    final_flag = f"SF{{{hashed_flag}}}"
+def generate_flag_for_gamebox(team_id, challenge_id):
+    flags_created = []
 
-    # AuthInfo 인스턴스에 플래그 저장 또는 갱신
-    obj, created = AuthInfo.objects.get_or_create(
-        challenge_name=gamebox.challenge_name,
-        team_id=gamebox.team_id,
-        challenge_id=gamebox.challenge_id,
-        round=round_info,
-        defaults={'flag': final_flag}
-    )
-    if not created:
-        obj.flag = final_flag
-        obj.save()
+    for round in range(1, 4):  # 모든 라운드에 대해 플래그 생성
+        try:
+            gamebox = GameBox.objects.get(team_id=team_id, challenge_id=challenge_id)
+            salt = secrets.token_hex(8)
+            raw_flag = f"{round}{gamebox.challenge_id}{salt}"
+            hashed_flag = hashlib.sha256(raw_flag.encode()).hexdigest()
+            final_flag = f"SF{{{hashed_flag}}}"
 
-    return final_flag  # 생성된 플래그를 반환
+            # AuthInfo 인스턴스에 플래그 저장 또는 갱신
+            obj, created = AuthInfo.objects.get_or_create(
+                challenge_name=gamebox.challenge_name,
+                team_id=gamebox.team_id,
+                challenge_id=gamebox.challenge_id,
+                round=round,
+                defaults={'flag': final_flag}
+            )
+            if not created:
+                obj.flag = final_flag
+                obj.save()
 
+            flags_created.append(final_flag)
+
+        except GameBox.DoesNotExist:
+            continue  # 해당 team_id와 challenge_id를 가진 GameBox가 없는 경우
+
+    return flags_created
+
+def create_one_flag(request, team_id, challenge_id):
+    if request.method == 'POST':
+        generate_flag_for_gamebox(team_id, challenge_id)
+        return HttpResponseRedirect(reverse('flag'))  # 플래그 관리 페이지로 리다이렉트
+    else:
+        return HttpResponse("Method not allowed.", status=405)
 
 def create_flag():
-    rounds = range(1, 4)  # 예를 들어 라운드는 1부터 3까지 있다고 가정
     gameboxes = GameBox.objects.all()
-    flags_created = []  # 생성된 플래그들을 저장할 리스트
+    all_flags_created = []
 
-    for round_info in rounds:
-        for gamebox in gameboxes:
-            flag = create_one_flag(gamebox, round_info)  # 각 GameBox 인스턴스에 대해 플래그 생성
-            flags_created.append(flag)
+    for gamebox in gameboxes:
+        flags_created = generate_flag_for_gamebox(gamebox.team_id, gamebox.challenge_id)
+        all_flags_created.extend(flags_created)
 
-    return flags_created  # 모든 생성된 플래그들의 리스트 반환
+    return all_flags_created
+
 
 def create_flag_view(request):
     create_flag()  # 플래그 생성

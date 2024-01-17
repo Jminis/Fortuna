@@ -71,12 +71,12 @@
                         <li class="list-group-item">
                             Team ID: {{ info.team_id }}, Challenge ID: {{ info.challenge_id }}
                             <!-- Renew flag 버튼 -->
-                            {% if gamebox_info.info.id %}
-                            <a href="{% url 'create_one_flag' gamebox_info.info.id round %}"
-                                class="btn btn-primary btn-sm float-right">Renew Flag</a>
-                            {% endif %}
+                            <form action="{% url 'create_one_flag' info.team_id info.challenge_id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary btn-sm float-right">Renew Flag</button>
+                            </form>
                         </li>
-                        {% endfor %}
+                    {% endfor %}
                     </ul>
                 </div>
                 <!-- Bottom Right Container -->
