@@ -39,6 +39,10 @@
 
 {% block content %}
 <div class="right-content">
+    <!-- 라운드 정보 표시-->
+    <div class="rounded-card bg-white p-3 mb-3">
+        <h5 class="card-title">Current Round: {{ round }}</h5>
+    </div>
     <!-- 메인 컨텐츠 섹션 -->
     <div class="container-fluid mt-5"> <!-- Bootstrap의 container-fluid 클래스 사용 -->
         <div class="row">
@@ -48,9 +52,9 @@
                     <h5 class="card-title">Flags</h5>
                     <!-- AuthInfo flags 반복하여 표시 -->
                     <ul class="list-group list-group-flush scrollable-list">
-                        {% for info in flags %}
+                        {% for info in round_info %}
                         <li class="list-group-item">
-                            {{ info.name }}({{ info.challenge_id }}): {{ info.flag }}
+                        Team{{info.team_id}}-{{ info.challenge_name }}(Chall: {{ info.challenge_id }}): {{info.flag}}
                         </li>
                         {% endfor %}
                     </ul>
@@ -60,20 +64,33 @@
             <div class="col-md-6">
                 <div class="rounded-card bg-white p-3 mb-3">
                     <!-- Top Right Container 내용 -->
+                    <h5 class="card-title">Current Challenge Info</h5>
+                    <ul class="list-group">
+                        {% for info in round_info %}
+                        <li class="list-group-item">
+                            <!-- chall 정보 -->
+                            Team ID: {{ info.team_id }}, Challenge ID: {{ info.challenge_id }}
+                            <!-- Renew flag 버튼 -->
+                            <a href="{% url 'create_one_flag' info.id %}"
+                                class="btn btn-primary btn-sm float-right">Renew Flag</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
                 </div>
                 <!-- Bottom Right Container -->
                 <div class="rounded-card bg-white p-3">
-                    <h5 class="card-title">Renew Flags</h5>
-                    <!-- Renew Flag 폼 -->
-                    <form action="{% url 'create_flag' %}" method="post">
+                    <h5 class="card-title">Flag Functions</h5>
+                    <!-- Flag Functions 폼 -->
+                    <form action="{% url 'create_flag' %}" method="post" style="display: inline;">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-primary">Renew Flag</button>
                     </form>
+                    <!-- Export AuthInfo 버튼 -->
+                    <a href="{% url 'export_authinfo' %}" class="btn btn-secondary" style="margin-left: 10px;">Export
+                        Flag</a>
                 </div>
             </div>
         </div>
     </div>
-</div>
-</div>
 </div>
 {% endblock content %}
