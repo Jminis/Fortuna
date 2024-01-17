@@ -44,7 +44,7 @@ class LogConsumer(AsyncWebsocketConsumer):
             existing_log = await database_sync_to_async(self.check_existing_action_log)(
                 auth_info.team_id, 
                 auth_info.challenge_id, 
-                user,  # attacker_team_id로 가정합니다.
+                user,
                 auth_info.round
             )
             # 이미 제출된 플래그일 경우
