@@ -54,7 +54,8 @@
                     <ul class="list-group list-group-flush scrollable-list">
                         {% for info in round_info %}
                         <li class="list-group-item">
-                        Team{{info.team_id}}-{{ info.challenge_name }}(Chall: {{ info.challenge_id }}): {{info.flag}}
+                            Team{{info.team_id}}-{{ info.challenge_name }}(Chall: {{ info.challenge_id }}):
+                            {{info.flag}}
                         </li>
                         {% endfor %}
                     </ul>
@@ -68,11 +69,12 @@
                     <ul class="list-group">
                         {% for info in round_info %}
                         <li class="list-group-item">
-                            <!-- chall 정보 -->
                             Team ID: {{ info.team_id }}, Challenge ID: {{ info.challenge_id }}
                             <!-- Renew flag 버튼 -->
-                            <a href="{% url 'create_one_flag' info.id %}"
+                            {% if gamebox_info.info.id %}
+                            <a href="{% url 'create_one_flag' gamebox_info.info.id round %}"
                                 class="btn btn-primary btn-sm float-right">Renew Flag</a>
+                            {% endif %}
                         </li>
                         {% endfor %}
                     </ul>
