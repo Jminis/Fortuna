@@ -1,7 +1,7 @@
 from django.db import models
 
 class Notices(models.Model):
-    created_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=255, null=True, blank=True)
     content = models.CharField(max_length=255, null=True, blank=True)
 

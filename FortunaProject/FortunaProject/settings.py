@@ -59,7 +59,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'manager',
+    'manage',
     'status',
     'notice',
     'rank',
