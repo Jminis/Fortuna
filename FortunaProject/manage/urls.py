@@ -11,9 +11,8 @@ urlpatterns = [
 
     # Team
     path('team/', account.manage_team_view, name='manage_team'),
-    path('delete/<int:team_id>/', account.delete_team_view, name='delete_team'),
-    path('update/<int:team_id>/', account.update_team_view, name='update_team'),
-    path('update-form/<int:team_id>/', account.update_team_form, name='update_team_form'),
+    path('delete_team/<int:team_id>', account.delete_team_view, name='delete_team'),
+    path('update_team/<int:team_id>', account.update_team_view, name='update_team'),
 
     # Notice
     path('notice/', notice.create_notice_view, name='create_notice'),
