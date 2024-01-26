@@ -1,12 +1,16 @@
 # challenge/views.py
 from django.http import JsonResponse
+from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from .models import GameBox
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import JsonResponse
 from .models import GameBox
+from .forms import GameBoxForm
 import json
+from collections import defaultdict
+
 
 
 def challenge_view(request):
@@ -118,39 +122,49 @@ def create_gamebox(request):
 
     return render(request, 'challenge/manage_challenge.html')
 
-def read_gamebox(request):
+def manage_gamebox_view(request):
+    # 새 GameBox 객체를 추가하기 위한 폼
+    if request.method == 'POST':
+        form = GameBoxForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('manage_challenge')  # 또는 다른 적절한 리다이렉션
+    else:
+        form = GameBoxForm()
+
     gameboxes = GameBox.objects.all()
-    return render(request, 'challenge/manage_challenge.html', {'gameboxes': gameboxes})
+    grouped_gameboxes = defaultdict(list)
+    ugameboxes = {}
+    for gamebox in gameboxes:
+        if gamebox not in ugameboxes:
+            ugameboxes[gamebox.team_id] = gamebox
 
-def update_gamebox(request, id):
+    forms = {gamebox: GameBoxForm(instance=gamebox) for gamebox in gameboxes}
+
+    # 수정 요청 처리
+    if 'edit_gamebox' in request.POST:
+        gamebox_id = request.POST.get('gamebox_id')
+        gamebox = get_object_or_404(GameBox, pk=gamebox_id)
+        edit_form = GameBoxForm(request.POST, instance=gamebox)
+        if edit_form.is_valid():
+            edit_form.save()
+
+    print(ugameboxes)
+    context = {'grouped_gameboxes':grouped_gameboxes ,'gameboxes': gameboxes, 'form': form, 'forms': forms, 'ugameboxes': ugameboxes}
+    return render(request, 'challenge/manage_challenge.html', context)
+
+def update_gamebox_view(request, id):
     gamebox = get_object_or_404(GameBox, pk=id)
+    form = GameBoxForm(request.POST or None, instance=gamebox)
 
-    if request.method == "POST":
-        challenge_id = request.POST.get('challenge_id')
-        challenge_name = request.POST.get('challenge_name')
-        team_id = request.POST.get('team_id')
-        ip = request.POST.get('ip')
-        post = request.POST.get('post')
-        ssh_port = request.POST.get('ssh_port')
-        ssh_user = request.POST.get('ssh_user')
-        ssh_password = request.POST.get('ssh_password')
-        description = request.POST.get('description')
-        visible = request.POST.get('visible')
-        score = request.POST.get('score')
-        is_down = request.POST.get('is_down')
-        is_attacked = request.POST.get('is_attacked')
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        return redirect('manage_challenge')
 
-        gamebox.save()
-        return redirect('challenge/manage_challenge.html')
+    return render(request, 'edit_gamebox.html', {'form': form})
 
-    return render(request, 'challenge/manage_challenge.html', {'gamebox': gamebox})
-
-
-def delete_gamebox(request, id):
+def delete_gamebox_view(request, id):
     gamebox = get_object_or_404(GameBox, pk=id)
-    
     if request.method == "POST":
         gamebox.delete()
-        return redirect('challenge/manage_challenge.html')
-
-    return render(request, 'challenge/manage_challenge.html', {'gamebox': gamebox})
+    return redirect('manage_challenge')
