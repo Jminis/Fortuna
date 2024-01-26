@@ -3,6 +3,7 @@ import hashlib
 import secrets
 from challenge.models import GameBox
 from authentication.models import AuthInfo
+from log.models import ActionTry
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.http import HttpResponse
@@ -10,8 +11,10 @@ from django.http import HttpResponse
 def flag_view(request):
     auth_info = AuthInfo.objects.all()  # 모든 AuthInfo 인스턴스를 가져옵니다.
     round = get_round_info()  # 현재 라운드 정보를 가져옵니다.
-    round = 2  # 현재 라운드 임시 설정
+#########################라운드 일괄 1    
+    round = 1  # 현재 라운드 임시 설정
     round_info = AuthInfo.objects.filter(round=round)  # 현재 라운드의 AuthInfo 인스턴스를 가져옵니다.
+    action_tries = ActionTry.objects.filter(round=round)
 
         # 각 AuthInfo 객체에 해당하는 GameBox ID를 저장할 리스트를 생성합니다.
     round_info_with_gamebox = []
@@ -33,6 +36,7 @@ def flag_view(request):
         'auth_info': auth_info,
         'round_info': round_info_with_gamebox,
         'round': round,
+        'action_tries': action_tries,  
     })
 
 def generate_flag_for_gamebox(team_id, challenge_id):
