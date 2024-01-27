@@ -35,6 +35,11 @@ class LogConsumer(AsyncWebsocketConsumer):
         user = self.scope['user']
         correct = False  # 초기값을 False로 설정
 
+        team = await database_sync_to_async(Team.objects.get)(name=user)
+        attacker_team_id = team.team_id
+################라운드 일괄 1 설정        
+        round = 1
+
         # Asynchronously find a matching AuthInfo and create an ActionLog
         try:
             auth_info = await database_sync_to_async(AuthInfo.objects.get)(flag=flag)
@@ -44,7 +49,7 @@ class LogConsumer(AsyncWebsocketConsumer):
             existing_log = await database_sync_to_async(self.check_existing_action_log)(
                 auth_info.team_id, 
                 auth_info.challenge_id, 
-                user,
+                attacker_team_id,
                 auth_info.round
             )
             # 이미 제출된 플래그일 경우
@@ -56,7 +61,7 @@ class LogConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({'toast': f"You've been attacked {auth_info.team_id}"}))
 
             #사용자 입력 로그 갱신
-            await database_sync_to_async(self.create_action_try)(user, flag, correct)
+            await database_sync_to_async(self.create_action_try)(user, flag, correct, attacker_team_id, round)
 
             #correct가 True인 경우에만 is_attacked와 score, actionlog 갱신
             if correct == True:
@@ -68,31 +73,31 @@ class LogConsumer(AsyncWebsocketConsumer):
                 #공격 로그(actionlog) 생성
 ######################라운드 일괄 1 설정
                 round = 1                
-                await database_sync_to_async(self.create_action_log)(auth_info, flag, round)
+                await database_sync_to_async(self.create_action_log)(user, auth_info, flag, round, attacker_team_id)
                 return f"{auth_info.team_id} is attacked by {user}"  # user를 사용해 사용자 이름을 반환
         except AuthInfo.DoesNotExist:
             await self.send(text_data=json.dumps({'toast': f"Sent: {flag}"}))
-            await database_sync_to_async(self.create_action_try)(user, flag, correct)  # Incorrect 플래그에 대한 ActionTry 생성
+            await database_sync_to_async(self.create_action_try)(user, flag, correct, attacker_team_id, round)  # Incorrect 플래그에 대한 ActionTry 생성
 
 
-    def create_action_log(self, auth_info, flag, round):
+    def create_action_log(self, user, auth_info, flag, round, attacker_team_id):
 ######################################
-        user = self.scope['user']   #attacker_team_id로 user id를 쓰고 있음. 로그인이 team_name으로 됨
         ActionLog.objects.create(
-            #name=auth_info.name,
-            team_id=auth_info.team_id,
+            attacker_name = user,
+            #attacked_name=auth_info._name,
+            attacked_team_id=auth_info.team_id,
+            attacker_team_id=attacker_team_id,
             challenge_id=auth_info.challenge_id,
-            attacker_team_id=user,
             round=round
         )
 
-    def create_action_try(self, submit_team, contents, correct):
-        user = self.scope['user']   #attacker_team_id로 user id를 쓰고 있음. 로그인이 team_name으로 됨
+    def create_action_try(self, user, contents, correct, attacker_team_id, round):
         ActionTry.objects.create(
-            submit_team=submit_team,
+            attacker_name = user,
             contents=contents,
             correct=correct,
-            attacker_team_id=user
+            attacker_team_id=attacker_team_id,
+            round=round
         )
 
     def update_game_box(self, team_id, challenge_id):
@@ -122,12 +127,10 @@ class LogConsumer(AsyncWebsocketConsumer):
 
     def check_existing_action_log(self, team_id, challenge_id, attacker_team_id, round):
         return ActionLog.objects.filter(
-            team_id=team_id, 
+            attacked_team_id=team_id, 
             challenge_id=challenge_id, 
             attacker_team_id=attacker_team_id, 
 ########################라운드 일괄 1            
             round=1
             #round=round
         ).exists()
-
-
