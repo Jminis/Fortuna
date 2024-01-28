@@ -11,8 +11,6 @@ from .forms import GameBoxForm
 import json
 from collections import defaultdict
 
-
-
 def challenge_view(request):
     context = {}  
     return render(request, 'challenge/challenge.html', context)
@@ -133,11 +131,9 @@ def manage_gamebox_view(request):
         form = GameBoxForm()
 
     gameboxes = GameBox.objects.all()
-    grouped_gameboxes = defaultdict(list)
-    ugameboxes = {}
+    ugameboxes = defaultdict(list)
     for gamebox in gameboxes:
-        if gamebox not in ugameboxes:
-            ugameboxes[gamebox.team_id] = gamebox
+        ugameboxes[gamebox.team_id].append(gamebox)
 
     forms = {gamebox: GameBoxForm(instance=gamebox) for gamebox in gameboxes}
 
@@ -149,9 +145,11 @@ def manage_gamebox_view(request):
         if edit_form.is_valid():
             edit_form.save()
 
-    print(ugameboxes)
-    context = {'grouped_gameboxes':grouped_gameboxes ,'gameboxes': gameboxes, 'form': form, 'forms': forms, 'ugameboxes': ugameboxes}
+    print('gameboxes:', gameboxes)
+    print('ugameboxes:', ugameboxes)
+    context = {'ugameboxes': ugameboxes, 'gameboxes': gameboxes, 'form': form, 'forms': forms}
     return render(request, 'challenge/manage_challenge.html', context)
+
 
 def update_gamebox_view(request, id):
     gamebox = get_object_or_404(GameBox, pk=id)
@@ -168,3 +166,4 @@ def delete_gamebox_view(request, id):
     if request.method == "POST":
         gamebox.delete()
     return redirect('manage_challenge')
+

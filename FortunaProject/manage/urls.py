@@ -2,6 +2,7 @@
 
 from django.urls import path
 from . import views
+
 from account import views as account
 from notice import views as notice
 from flag import views as flag 
