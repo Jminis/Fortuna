@@ -13,10 +13,10 @@ class GameBox(models.Model):
     ssh_user = models.CharField(max_length=255, null=True, blank=True)
     ssh_password = models.CharField(max_length=255, null=True, blank=True)
     description = models.CharField(max_length=500, null=True, blank=True)
-    visible = models.BooleanField(null=True, blank=True)
+    visible = models.BooleanField(null=False, blank=True, default=True)
     score = models.FloatField(null=True, blank=True)
-    is_down = models.BooleanField(null=True, blank=True)
-    is_attacked = models.BooleanField(null=True, blank=True)
+    is_down = models.BooleanField(null=False, blank=True, default=False)
+    is_attacked = models.BooleanField(null=False, blank=True, default=False)
 
     class Meta:
         db_table = 'game_boxes'
