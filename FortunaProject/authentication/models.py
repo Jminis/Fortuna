@@ -1,7 +1,7 @@
 from django.db import models
 
 class AuthInfo(models.Model):
-    name = models.CharField(max_length=255, unique=True)
+    challenge_name = models.CharField(max_length=255, null=True)
     team_id = models.PositiveIntegerField(null=True, blank=True)
     challenge_id = models.IntegerField()
     round = models.IntegerField()
