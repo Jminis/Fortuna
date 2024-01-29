@@ -57,6 +57,7 @@ def delete_team_view(request, team_id):
 
 @login_required
 def update_team_view(request, team_id):
+    
     try:
         team = Team.objects.get(id=team_id)
     except Team.DoesNotExist:
@@ -65,6 +66,7 @@ def update_team_view(request, team_id):
 
     if request.method == 'POST':
         form = TeamCreationForm(request.POST, request.FILES, instance=team)
+        print(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Team updated successfully!')
