@@ -1,64 +1,131 @@
 {% extends 'manage/base.html' %}
 {% block content %}
-    <style>
-        .notice-form {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f4f4f4;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+<style>
+    .notice-form {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
 
-        .notice-form h2 {
-            margin-bottom: 20px;
-            color: #333;
-        }
+    .notice-form h2 {
+        margin-bottom: 20px;
+        color: #333;
+    }
 
-        .notice-form label {
-            display: block;
-            margin-bottom: 5px;
-            color: #666;
-        }
+    .notice-form label {
+        display: block;
+        margin-bottom: 5px;
+        color: #666;
+    }
 
-        .notice-form input[type="text"],
-        .notice-form input[type="datetime-local"],
-        .notice-form textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
+    .notice-form input[type="text"],
+    .notice-form input[type="datetime-local"],
+    .notice-form textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
 
-        .notice-form textarea {
-            height: 150px;
-            resize: vertical;
-        }
+    .notice-form textarea {
+        height: 150px;
+        resize: vertical;
+    }
 
-        .notice-form button {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            background-color: #5cb85c;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+    .notice-form button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #333;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
 
-        .notice-form button:hover {
-            background-color: #4cae4c;
-        }
-    </style>
+    .notice-form button:hover {
+        background-color: #212529;
+    }
 
-    <h2>Add Notice</h2>
-    <form method="post" class="notice-form">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
-    </form>
+    .notices-list {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        border-radius: 10px;
+        /* 카드의 모서리를 둥글게 */
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        /* 카드에 그림자 추가 */
+    }
+
+    .notice-item {
+
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .notice-item button {
+        border: none;
+        background-color: #dc3545;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .notice-title {
+        color: #333;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .notice-content {
+        margin-bottom: 5px;
+    }
+
+    .notice-date {
+        font-size: 0.8em;
+        color: #666;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-5">
+        <h2></h2>
+        <form method="post" class="notice-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <div class="col-md-7">
+        <ul class="notices-list">
+            {% for notice in notices %}
+            <li class="notice-item">
+                <div>
+                    <div class="notice-title">{{ notice.title }}</div>
+                    <div class="notice-content">{{ notice.content }}</div>
+                    <div class="notice-date">{{ notice.created_at }}</div>
+                </div>
+                <div>
+                    <form method="post" action="{% url 'delete_notice' notice.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Delete</button>
+                    </form>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
 
 {% endblock %}
