@@ -15,7 +15,7 @@ class TeamCreationForm(forms.ModelForm):
             'secret_key': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Secret Key'}),
             'team_id': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Team ID'}),
             'token': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Token'}),
-            'is_staff': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'is_staff': forms.CheckboxInput(attrs={'class': 'form-check-label'}),
             
         }
 
