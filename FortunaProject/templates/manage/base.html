@@ -71,16 +71,18 @@
             border-top: 1px solid #555;
         }
     </style>
+    {% block extra_css %}{% endblock extra_css %}
 </head>
 <body>
     <div class="manage-container">
         <div class="manage-left-container">
             <nav class="manage-navbar">
                 <div class="manage-nav-logo">
-                    <a href="/manage/team">
+                    <a href="/manage/">
                         <img src="{% static 'demologo.png' %}" alt="logo">
                     </a>
                 </div>
+                <a href="/manage/dashboard" class="manage-nav-item">Dashboard</a>
                 <a href="/manage/team" class="manage-nav-item">Team</a>
                 <a href="/manage/challenge" class="manage-nav-item">Challenge</a>
                 <a href="/manage/notice" class="manage-nav-item">Notice</a>
