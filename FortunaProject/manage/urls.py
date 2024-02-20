@@ -26,6 +26,7 @@ urlpatterns = [
     path('challenge/', challenge.manage_gamebox_view, name='manage_challenge'),
     path('delete_challenge/<int:id>/', challenge.delete_gamebox_view, name='delete_challenge'),
     path('update_challenge/<int:id>/', challenge.update_gamebox_view, name='update_challenge'),
+    path('upsert_challenge/', challenge.upsert_challenge_view, name='upsert_challenge'),
 
     # Flag
     path('flag/', flag.flag_view, name='flag'),

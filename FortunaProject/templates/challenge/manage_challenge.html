@@ -66,56 +66,97 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h2 class="card-title text-center">Gamebox List</h2>
+                    <h2 class="card-title text-center">Team List</h2>
                     <div class="table-responsive">
                         <table class="table">
                             <!-- 테이블 헤더 -->
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>TeamID</th>
+                                    <th>Logo</th>
+                                </tr>
+                            </thead>
+                            <!-- 테이블 본문 -->
+                            <tbody>
+                                {% for team in teams %}
+                                <tr>
+                                    <td>{{ team.name }}</td>
+                                    <td>{{ team.team_id }}</td>
+                                    <td>{{ team.logo }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center">Challenge List</h2>
+                    <div class="table-responsive" style="padding-bottom: 8px;">
+                        <table class="table">
+                            <!-- 테이블 헤더 -->
+                            <thead>
+                                <tr>
                                     <th>Challenge ID</th>
                                     <th>Challenge Name</th>
-                                    <th>Team ID</th>
-                                    <th>Port</th>
-                                    <th>SSH Port</th>
-                                    <th>SSH User</th>
-                                    <th>SSH Password</th>
-                                    <th>Visible</th>
-                                    <th>Is Down</th>
-                                    <th>Is Attacked</th>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
+                                    <th>Description</th>
+                                    <th>Score</th>
                                 </tr>
                             </thead>
                             <!-- 테이블 본문 -->
                             <tbody>
                                 {% for gamebox in gameboxes %}
                                 <tr>
-                                    <td>{{ gamebox.id }}</td>
                                     <td>{{ gamebox.challenge_id }}</td>
                                     <td>{{ gamebox.challenge_name }}</td>
-                                    <td>{{ gamebox.team_id }}</td>
-                                    <td>{{ gamebox.port }}</td>
-                                    <td>{{ gamebox.ssh_port }}</td>
-                                    <td>{{ gamebox.ssh_user }}</td>
-                                    <td>{{ gamebox.ssh_password }}</td>
-                                    <td>{{ gamebox.visible }}</td>
-                                    <td>{{ gamebox.is_down }}</td>
-                                    <td>{{ gamebox.is_attacked }}</td>
-                                    <td>
-                                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editModal{{ gamebox.id }}">Edit</button>
-                                    </td>
-                                    <td>
-                                        <form method="post" action="{% url 'delete_challenge' gamebox.id %}">
-                                            {% csrf_token %}
-                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                        </form>
-                                    </td>
+                                    <td>{{ gamebox.description }}</td>
+                                    <td>{{ gamebox.score }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+            <br>
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center">Gamebox List</h2>
+                    <div class="table-responsive" style="padding-bottom: 8px;">
+                        <table class="table">
+                            <!-- 테이블 헤더 -->
+                            <thead>
+                                <tr>
+                                    <th>Team ID</th>
+                                    <th>IP</th>
+                                    <th>Port</th>
+                                    <th>SSH Port</th>
+                                    <th>SSH Username</th>
+                                    <th>SSH Password</th>
+                                </tr>
+                            </thead>
+                            <!-- 테이블 본문 -->
+                            <tbody>
+                                {% for challenge in challenges %}
+                                <tr>
+                                    <td>{{ challenge.team_id }}</td>
+                                    <td>{{ challenge.ip }}</td>
+                                    <td>{{ challenge.port }}</td>
+                                    <td>{{ challenge.ssh_port }}</td>
+                                    <td>{{ challenge.ssh_user }}</td>
+                                    <td>{{ challenge.ssh_password }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <form action="{% url 'upsert_challenge' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">Create Gameboxes</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -124,11 +165,11 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h2 class="card-title text-center">Create Gamebox</h2>
+                    <h2 class="card-title text-center">Create Challenge</h2>
                     <form method="post">
                         {% csrf_token %}
                         {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary">Create Gamebox</button>
+                        <button type="submit" class="btn btn-primary">Create Challenge</button>
                     </form>    
                 </div>
             </div>
