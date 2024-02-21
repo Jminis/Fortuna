@@ -19,6 +19,7 @@ class ActionTry(models.Model):
     correct = models.BooleanField()
     attacker_team_id = models.PositiveIntegerField(null=True, blank=True)
     round = models.IntegerField(null=True, blank=True)
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    
     def __str__(self):
         return f"{self.attacker_name} - {'Correct' if self.correct else 'Incorrect'}"

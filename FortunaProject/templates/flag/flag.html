@@ -147,7 +147,8 @@
       parsedData.forEach(actionTry => {
   const div = document.createElement('div');
   div.style.overflowWrap = 'break-word'; // 긴 단어도 줄바꿈 되도록 설정
-  div.textContent = `${actionTry.fields.attacker_name}: ${actionTry.fields.contents} - ${actionTry.fields.correct ? 'Correct' : 'Incorrect'}`;
+  const createdAt = new Date(actionTry.fields.created_at).toLocaleString();
+  div.textContent = `${actionTry.fields.attacker_name}(${actionTry.fields.created_at}): ${actionTry.fields.contents} - ${actionTry.fields.correct ? 'Correct' : 'Incorrect'}`;
   modalBody.appendChild(div);
 });
 
