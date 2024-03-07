@@ -3,6 +3,8 @@ from django.conf import settings
 from django.shortcuts import render
 from account.models import Team
 from log.models import ActionLog
+from config.models import Config
+from django.utils import timezone
 
 config_path = os.path.join(settings.BASE_DIR, 'config.json')
 with open(config_path, 'r') as config_file:
@@ -18,5 +20,12 @@ def index_view(request):
 
 def play_view(request):
     actions = ActionLog.objects.all().order_by('created_at')[:50]
-    context = {'actions': actions}
+    config = Config.objects.latest('created_at')
+    
+    now = timezone.localtime()
+    elapsed_time = now - timezone.localtime(config.starttime)
+    total_minutes = int(elapsed_time.total_seconds() // 60)
+    current_round = total_minutes // config.round_time
+
+    context = {'actions': actions, 'config': config, 'round':current_round}
     return render(request, 'play.html', context)

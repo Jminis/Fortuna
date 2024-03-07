@@ -6,11 +6,11 @@ from .models import ActionTry
 from challenge.models import GameBox
 from account.models import Team
 from authentication.models import AuthInfo
-
+from config.models import Config
+from django.utils import timezone
 
 class LogConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        print("WebSocket connected!")
         # Joining the "chat" group
         await self.channel_layer.group_add("chat", self.channel_name)
         await self.accept()
@@ -30,6 +30,25 @@ class LogConsumer(AsyncWebsocketConsumer):
         if response:
             await self.send(text_data=json.dumps({'data': response}))
 
+    @database_sync_to_async
+    def get_latest_config(self):
+        try:
+            return Config.objects.latest('created_at')
+        except Config.DoesNotExist:
+            return None
+
+    async def calculate_current_round(self):
+        config = await self.get_latest_config()
+        if config:
+            now = timezone.localtime()
+            elapsed_time = now - timezone.localtime(config.starttime)
+            total_minutes = int(elapsed_time.total_seconds() // 60)
+            current_round = total_minutes // config.round_time
+            return current_round
+        else:
+            return 1  # Default round value if no config is found
+
+
     #플래그 체크, 점수/is_attacked 갱신, 로그 생성
     async def check_flag_and_create_log(self, flag):
         user = self.scope['user']
@@ -37,12 +56,12 @@ class LogConsumer(AsyncWebsocketConsumer):
 
         team = await database_sync_to_async(Team.objects.get)(name=user)
         attacker_team_id = team.team_id
-################라운드 일괄 1 설정        
-        round = 1
+
+        round = await self.calculate_current_round()
 
         # Asynchronously find a matching AuthInfo and create an ActionLog
         try:
-            auth_info = await database_sync_to_async(AuthInfo.objects.get)(flag=flag)
+            auth_info = await database_sync_to_async(AuthInfo.objects.get)(flag=flag, round=round)
             correct = True  # 일치하는 flag가 있을 경우 correct를 True로 설정
 
             # 이미 제출된 플래그인지 확인
@@ -50,7 +69,7 @@ class LogConsumer(AsyncWebsocketConsumer):
                 auth_info.team_id, 
                 auth_info.challenge_id, 
                 attacker_team_id,
-                auth_info.round
+                round
             )
             # 이미 제출된 플래그일 경우
             if existing_log:
@@ -70,9 +89,7 @@ class LogConsumer(AsyncWebsocketConsumer):
                 # score 갱신
                 await database_sync_to_async(self.update_team_score)(auth_info.team_id, score)
 
-                #공격 로그(actionlog) 생성
-######################라운드 일괄 1 설정
-                round = 1                
+                #공격 로그(actionlog) 생성                
                 await database_sync_to_async(self.create_action_log)(user, auth_info, flag, round, attacker_team_id)
                 return f"{auth_info.team_id} is attacked by {user}"  # user를 사용해 사용자 이름을 반환
         except AuthInfo.DoesNotExist:
@@ -130,7 +147,5 @@ class LogConsumer(AsyncWebsocketConsumer):
             attacked_team_id=team_id, 
             challenge_id=challenge_id, 
             attacker_team_id=attacker_team_id, 
-########################라운드 일괄 1            
-            round=1
-            #round=round
+            round=round
         ).exists()
