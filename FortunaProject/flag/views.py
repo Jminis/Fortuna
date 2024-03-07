@@ -4,24 +4,37 @@ import secrets
 from challenge.models import GameBox
 from authentication.models import AuthInfo
 from account.models import Team
+from config.models import Config
 from log.models import ActionTry
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.http import HttpResponse
 from django.core import serializers
 from django.http import JsonResponse
+from django.utils import timezone
+
+def get_round_info():
+    # 현재 시간과 대회 시작 시간을 비교하여 현재 라운드 계산
+    try:
+        config = Config.objects.latest('created_at')
+        
+        now = timezone.localtime()
+        elapsed_time = now - timezone.localtime(config.starttime)
+        total_minutes = int(elapsed_time.total_seconds() // 60)
+        current_round = total_minutes // config.round_time
+        return current_round
+    except Config.DoesNotExist:
+        return 1  # Config가 없는 경우 기본값으로 1 반환
 
 def flag_view(request):
     auth_info = AuthInfo.objects.all()  # 모든 AuthInfo 인스턴스를 가져옵니다.
     round = get_round_info()  # 현재 라운드 정보를 가져옵니다.
-#########################라운드 일괄 1    
-    round = 1  # 현재 라운드 임시 설정
     round_info = AuthInfo.objects.filter(round=round)  # 현재 라운드의 AuthInfo 인스턴스를 가져옵니다.
     action_tries = ActionTry.objects.filter(round=round)
 
     teams = Team.objects.all()  # 모든 Team 인스턴스를 가져옵니다.
 
-        # 각 AuthInfo 객체에 해당하는 GameBox ID를 저장할 리스트를 생성합니다.
+    # 각 AuthInfo 객체에 해당하는 GameBox ID를 저장할 리스트를 생성합니다.
     round_info_with_gamebox = []
     for info in round_info:
         try:
@@ -45,14 +58,26 @@ def flag_view(request):
         'teams': teams,
     })
 
+def calculate_rounds():
+    try:
+        config = Config.objects.latest('created_at')
+        total_duration = timezone.localtime(config.endtime) - timezone.localtime(config.starttime)
+        total_minutes = total_duration.total_seconds() // 60
+        # 각 라운드의 지속 시간으로 전체 기간을 나누어 총 라운드 수를 계산
+        total_rounds = int(total_minutes // config.round_time)
+        return 0, total_rounds  # 첫 라운드와 마지막 라운드 번호 반환
+    except Config.DoesNotExist:
+        return 1, 1  # Config가 없는 경우 기본적으로 하나의 라운드만 있다고 가정
+
 def generate_flag_for_gamebox(team_id, challenge_id):
     flags_created = []
+    first_round, last_round = calculate_rounds()  # 첫 라운드와 마지막 라운드 계산
 
-    for round in range(1, 4):  # 모든 라운드에 대해 플래그 생성
+    for rounds in range(first_round, last_round+1):  # 모든 라운드에 대해 플래그 생성
         try:
             gamebox = GameBox.objects.get(team_id=team_id, challenge_id=challenge_id)
             salt = secrets.token_hex(8)
-            raw_flag = f"{round}{gamebox.challenge_id}{salt}"
+            raw_flag = f"{rounds}{gamebox.challenge_id}{salt}"
             hashed_flag = hashlib.sha256(raw_flag.encode()).hexdigest()
             final_flag = f"SF{{{hashed_flag}}}"
 
@@ -61,7 +86,7 @@ def generate_flag_for_gamebox(team_id, challenge_id):
                 challenge_name=gamebox.challenge_name,
                 team_id=gamebox.team_id,
                 challenge_id=gamebox.challenge_id,
-                round=round,
+                round=rounds,
                 defaults={'flag': final_flag}
             )
             if not created:
@@ -114,12 +139,7 @@ def export_authinfo_to_txt(request):
     return response
 
 def get_action_tries_for_team(request, team_name):
-    action_tries = ActionTry.objects.filter(attacker_name=team_name, round=1)
+    action_tries = ActionTry.objects.filter(attacker_name=team_name, round=round)
     data = serializers.serialize('json', action_tries)
     return JsonResponse(data, safe=False)
-
-def get_round_info():
-    # 라운드 정보를 반환하는 함수
-    # 이 부분은 라운드 정보를 어떻게 관리하는지에 따라 달라집니다.
-    pass
 
