@@ -11,8 +11,7 @@ from config import views as config
 
 urlpatterns = [
     # Dashboard
-    path('', views.manage_home_view, name='manage_home'),
-    path('dashboard/', views.dashboard_view, name='dashboard'),
+    path('', views.dashboard_view, name='dashboard'),
 
     # Team
     path('team/', account.manage_team_view, name='manage_team'),

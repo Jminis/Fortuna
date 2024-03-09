@@ -23,7 +23,7 @@ class ProjectAccessMiddleware:
                     response = self.get_response(request)
                 else:
                     # 운영 시간 외이면 대회가 진행 중이지 않다는 페이지 출력해야 되는데 일단 manage로 리다이렉트
-                    manage_url = reverse('manage_home')  # 'manage/'의 URL 이름
+                    manage_url = reverse('dashboard')  # 'manage/'의 URL 이름
                     return redirect(manage_url)
             else:
                 # 다른 URL 요청은 그대로 진행
@@ -31,7 +31,7 @@ class ProjectAccessMiddleware:
                 
         except Config.DoesNotExist:
             # Config가 없는 경우, 모든 요청을 'manage/' URL로 리다이렉트
-            manage_url = reverse('manage-url-name')
+            manage_url = reverse('dashboard')
             return redirect(manage_url)
 
         return response

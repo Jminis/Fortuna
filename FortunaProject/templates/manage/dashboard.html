@@ -1,79 +1,62 @@
 {% extends 'manage/base.html' %}
 {% block extra_css %}
-<style>
-    /* Styles to integrate dashboard content within the base layout */
-    .dashboard-content {
-        padding: 20px;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-gap: 20px;
-    }
-    .dashboard-section {
-        background-color: #fff;
-        border-radius: 4px;
-        padding: 15px;
-        border: 1px solid #dee2e6;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    }
-    .dashboard-log {
-        grid-column: 1 / -1; /* Makes the log take full width */
-        height: 300px; /* Set a fixed height */
-        overflow-y: auto; /* Add scroll */
-        white-space: pre-wrap; /* Preserve formatting of log */
-        font-family: monospace; /* Font for log */
-    }
-    .table-responsive {
-        margin-bottom: 0;
-    }
-    @media (max-width: 991px) {
-        .dashboard-content {
-            grid-template-columns: 1fr; /* Stack sections on smaller screens */
-        }
-    }
-</style>
 {% endblock extra_css %}
 
 {% block content %}
-<div class="manage-right-content">
-    <div class="dashboard-content">
-        <!-- 현재 대회 상태 Section -->
-        <div class="dashboard-section">
-            <h5>현재 대회 상태</h5>
-            <p><strong>대회 이름:</strong> {{ current_config.ctf_name }}</p>
-            <p><strong>현재 시각:</strong> {{ current_time }}</p>
-            <p><strong>현재 라운드:</strong> {{ current_round }} / {{ total_rounds }}</p>
-            <p><strong>남은 라운드:</strong> {{ rounds_left }}</p>
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center">CTF Status</h2>
+                    <p><strong>대회 이름:</strong> {{ current_config.ctf_name }}</p>
+                    <p><strong>현재 시각:</strong> {{ current_time }}</p>
+                    <p><strong>현재 라운드:</strong> {{ current_round }} / {{ total_rounds }}</p>
+                    <p><strong>남은 라운드:</strong> {{ rounds_left }}</p>
+                </div>
+            </div>
         </div>
-        
-        <!-- Gamebox 상태 Section -->
-        <div class="dashboard-section table-responsive">
-            <h5>Gamebox 상태</h5>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>팀</th>
-                        <th>상태 1</th>
-                        <th>상태 2</th>
-                        <th>상태 3</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for team, statuses in gamebox_status.items %}
-                    <tr>
-                        <td>{{ team }}</td>
-                        {% for status in statuses %}
-                        <td class="{% if status == 'o' %}status-active{% else %}status-inactive{% endif %}">{{ status }}</td>
-                        {% endfor %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center">Gamebox Status</h2>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>팀</th>
+                                    <th>상태 1</th>
+                                    <th>상태 2</th>
+                                    <th>상태 3</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for team, statuses in gamebox_status.items %}
+                                <tr>
+                                    <td>{{ team }}</td>
+                                    {% for status in statuses %}
+                                    <td class="{% if status == 'o' %}status-active{% else %}status-inactive{% endif %}">{{ status }}</td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
-        
-        <!-- Django 로그 Section -->
-        <div class="dashboard-section dashboard-log">
-            <h5>Django 로그</h5>
-            <div>{{ django_log }}</div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center">Django Log</h2>
+                        <div class="dashboard-log">
+                            {{ django_log }}
+                        </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -3,60 +3,6 @@
 {% load static %}
 
 {% block extra_css %}
-<style>
-    @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
-
-    .container {
-        width: calc(100% - 140px);
-        margin-left: 150px; /* 페이지 중앙 정렬 */
-    }
-
-    .custom-card {
-        display: flex;
-        flex-direction: column;
-        min-width: 0;
-        word-wrap: break-word;
-        background-color: #343a40; /* 어두운 배경색 */
-        border: none;
-        border-radius: 0 50px 50px 0; /* 오른쪽 위와 왼쪽 아래 모서리 둥글게 */
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-        color: #ffffff; /* 글자 색상 흰색으로 */
-        margin-bottom: 20px;
-        overflow: hidden;
-    }
-
-    .custom-card-body {
-        flex: 1 1 auto;
-        padding: 1.25rem;
-    }
-
-    .title {
-        padding: 5px 5px;
-        color: black;
-        font-size: large;
-        font-family: 'Roboto', sans-serif;
-    }
-
-    .config-container {
-        background-color: #f8f9fa; /* 배경색 */
-        border-radius: 10px; /* 테두리 둥글게 */
-        padding: 15px; /* 안쪽 여백 */
-        margin-top: 20px; /* 위쪽 여백 */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
-    }
-
-    .config-item {
-        background-color: #ffffff; /* 각 항목의 배경색 */
-        border: 1px solid #ddd; /* 테두리 */
-        border-radius: 5px; /* 항목 테두리 둥글게 */
-        padding: 10px; /* 항목 내부 여백 */
-        margin-bottom: 10px; /* 항목 간 간격 */
-    }
-
-    .config-title {
-        font-weight: bold; /* 제목 굵게 */
-    }
-</style>
 {% endblock extra_css %}
 
 {% block content %}
