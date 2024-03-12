@@ -30,7 +30,6 @@ class ProjectAccessMiddleware:
                 
         except Config.DoesNotExist:
             # Config가 없는 경우, 모든 요청을 'manage/' URL로 리다이렉트
-            manage_url = reverse('dashboard')
-            return redirect(manage_url)
+            response = self.get_response(request)
 
         return response
