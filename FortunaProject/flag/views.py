@@ -79,6 +79,7 @@ def generate_flag_for_gamebox(team_id, challenge_id):
             salt = secrets.token_hex(8)
             raw_flag = f"{rounds}{gamebox.challenge_id}{salt}"
             hashed_flag = hashlib.sha256(raw_flag.encode()).hexdigest()
+            #config로부터 접두사 가져와야 함!
             final_flag = f"SF{{{hashed_flag}}}"
 
             # AuthInfo 인스턴스에 플래그 저장 또는 갱신
