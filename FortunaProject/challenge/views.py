@@ -1,15 +1,14 @@
 # challenge/views.py
 from django.http import JsonResponse
-from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from .models import GameBox
+from .models import GameBox, Challenge
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import JsonResponse
 from .models import GameBox
-from .forms import GameBoxForm
+from .forms import GameBoxForm, ChallengeForm
 import json
-from collections import defaultdict
+from account.models import Team
 
 def challenge_view(request):
     context = {}  
@@ -51,11 +50,6 @@ def get_gamebox_data(request): # 멀티루틴-싱글루틴 처리필요
             'challenge_id': gamebox.challenge_id,
             'challenge_name': gamebox.challenge_name,
             'team_id': gamebox.team_id,
-            'ip': gamebox.ip,
-            'port': gamebox.port,
-            'ssh_port': gamebox.ssh_port,
-            'ssh_user': gamebox.ssh_user,
-            'ssh_password': gamebox.ssh_password,
             'description': gamebox.description,
             'score': gamebox.score,
             'visible': gamebox.visible,
@@ -69,11 +63,6 @@ def get_gamebox_data(request): # 멀티루틴-싱글루틴 처리필요
             'challenge_id': gamebox.challenge_id,
             'challenge_name': gamebox.challenge_name,
             'team_id': gamebox.team_id,
-            'ip': gamebox.ip,
-            'port': gamebox.port,
-            'ssh_port': gamebox.ssh_port,
-            'ssh_user': gamebox.ssh_user,
-            'ssh_password': gamebox.ssh_password,
             'description': gamebox.description,
             'score': gamebox.score,
             'visible': gamebox.visible,
@@ -89,11 +78,6 @@ def create_gamebox(request):
         challenge_id = request.POST.get('challenge_id')
         challenge_name = request.POST.get('challenge_name')
         team_id = request.POST.get('team_id')
-        ip = request.POST.get('ip')
-        post = request.POST.get('post')
-        ssh_port = request.POST.get('ssh_port')
-        ssh_user = request.POST.get('ssh_user')
-        ssh_password = request.POST.get('ssh_password')
         description = request.POST.get('description')
         visible = True
         score = 0
@@ -104,11 +88,6 @@ def create_gamebox(request):
             challenge_id=challenge_id,
             challenge_name=challenge_name,
             team_id=team_id,
-            ip = ip,
-            post = post,
-            ssh_port = ssh_port,
-            ssh_user = ssh_user,
-            ssh_password = ssh_password,
             description = description,
             visible = visible,
             score = score,
@@ -120,40 +99,36 @@ def create_gamebox(request):
 
     return render(request, 'challenge/manage_challenge.html')
 
+## Manage Page View
 def manage_gamebox_view(request):
     # 새 GameBox 객체를 추가하기 위한 폼
     if request.method == 'POST':
-        form = GameBoxForm(request.POST)
+        form = ChallengeForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('manage_challenge')  # 또는 다른 적절한 리다이렉션
     else:
-        form = GameBoxForm()
+        form = ChallengeForm()
 
     gameboxes = GameBox.objects.all()
-    ugameboxes = defaultdict(list)
-    for gamebox in gameboxes:
-        ugameboxes[gamebox.team_id].append(gamebox)
-
-    forms = {gamebox: GameBoxForm(instance=gamebox) for gamebox in gameboxes}
+    teams = Team.objects.all()
+    forms = {gamebox: ChallengeForm(instance=gamebox) for gamebox in gameboxes}
+    challenges = Challenge.objects.all()
 
     # 수정 요청 처리
     if 'edit_gamebox' in request.POST:
         gamebox_id = request.POST.get('gamebox_id')
         gamebox = get_object_or_404(GameBox, pk=gamebox_id)
-        edit_form = GameBoxForm(request.POST, instance=gamebox)
+        edit_form = ChallengeForm(request.POST, instance=gamebox)
         if edit_form.is_valid():
             edit_form.save()
-
-    print('gameboxes:', gameboxes)
-    print('ugameboxes:', ugameboxes)
-    context = {'ugameboxes': ugameboxes, 'gameboxes': gameboxes, 'form': form, 'forms': forms}
+    context = {'gameboxes': gameboxes, 'form': form, 'forms': forms, 'teams': teams, 'challenges': challenges}
     return render(request, 'challenge/manage_challenge.html', context)
 
 
 def update_gamebox_view(request, id):
     gamebox = get_object_or_404(GameBox, pk=id)
-    form = GameBoxForm(request.POST or None, instance=gamebox)
+    form = ChallengeForm(request.POST or None, instance=gamebox)
 
     if request.method == "POST" and form.is_valid():
         form.save()
@@ -167,3 +142,27 @@ def delete_gamebox_view(request, id):
         gamebox.delete()
     return redirect('manage_challenge')
 
+def upsert_challenge_view(request):
+    Challenge.objects.all().delete()
+    print(1)
+
+    team_count = Team.objects.count()
+    challenge_count = GameBox.objects.count()
+    print(team_count)
+    print(challenge_count)
+    for i in range(1, team_count + 1):
+        for j in range(1, challenge_count + 1):
+            ip = f'192.168.1.{j}00{i}'
+            port = j*1000 + i
+            ssh_port = j*100+i
+            ssh_username = f'user{i}'
+            ssh_password = f'1234{i}'
+            Challenge.objects.create(
+                ip = ip,
+                port = port,
+                ssh_port = ssh_port,
+                ssh_user = ssh_username,
+                ssh_password = ssh_password
+            )
+
+    return redirect('manage_challenge')
