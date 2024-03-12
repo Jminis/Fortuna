@@ -20,12 +20,16 @@ def index_view(request):
 
 def play_view(request):
     actions = ActionLog.objects.all().order_by('created_at')[:50]
-    config = Config.objects.latest('created_at')
+    try:
+        config = Config.objects.latest('created_at')
+        #라운드 계산
+        now = timezone.localtime()
+        elapsed_time = now - timezone.localtime(config.starttime)
+        total_minutes = int(elapsed_time.total_seconds() // 60)
+        current_round = total_minutes // config.round_time
+    except Config.DoesNotExist:
+        config = 0
+        current_round = 0   
     
-    now = timezone.localtime()
-    elapsed_time = now - timezone.localtime(config.starttime)
-    total_minutes = int(elapsed_time.total_seconds() // 60)
-    current_round = total_minutes // config.round_time
-
     context = {'actions': actions, 'config': config, 'round':current_round}
     return render(request, 'play.html', context)
