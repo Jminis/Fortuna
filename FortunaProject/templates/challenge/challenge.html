@@ -50,12 +50,6 @@
 
 </style>
 {% load static %}
-<div class="challenge-button">
-    <button id="test" onclick="updateGameboxStatus(1, 2, true, true)">Update GameBox</button>
-</div>
-<div class="challenge-button">
-    <button id="test" onclick="updateGameboxStatus(1, 2, false, false)">Update GameBox</button>
-</div>
 <!-- 챌린지 목록 -->
 <div class="challenge-list">
     <h2>Challenges</h2>
@@ -105,6 +99,7 @@
         const container = document.querySelector('.challenge-row');
         const test_button = ``;
         container.innerHTML = ''+test_button;  // 기존 내용을 비움
+        console.log(gameboxes)
         gameboxes.forEach(gamebox => {
             let background_color_style;
             if (gamebox.is_down == true) {

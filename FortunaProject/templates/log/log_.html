@@ -95,18 +95,7 @@
     from { opacity: 1; }
     to { opacity: 0; }
 }
-
-
 </style>
-
-<!-- <ul id="messageList">
-    {% for action in actions %}
-    <li class="message-container">
-        <div class="message">{{ action.team_id }} attacked by {{ action.attacker_team_id }}</div>
-        <div class="timestamp">{{ action.created_at|date:"H:i" }}</div>
-    </li>
-    {% endfor %}
-</ul> -->
 
 <ul id="messageList">
     {% for action in actions %}
@@ -118,6 +107,6 @@
 </ul>
 
 <div class="inputArea">
-    <input type="text" id="inputField">
+    <input type="text" id="inputField" placeholder="{{ config.flag_head }}{...}">
     <button id="sendButton">Send</button>
 </div>

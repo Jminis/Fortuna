@@ -11,8 +11,7 @@ from config import views as config
 
 urlpatterns = [
     # Dashboard
-    path('', views.manage_home_view, name='manage_home'),
-    path('dashboard/', views.dashboard_view, name='dashboard'),
+    path('', views.dashboard_view, name='dashboard'),
 
     # Team
     path('team/', account.manage_team_view, name='manage_team'),
@@ -26,8 +25,6 @@ urlpatterns = [
 
     # Challenge
     path('challenge/', challenge.manage_gamebox_view, name='manage_challenge'),
-    path('delete_challenge/<int:id>/', challenge.delete_gamebox_view, name='delete_challenge'),
-    path('update_challenge/<int:id>/', challenge.update_gamebox_view, name='update_challenge'),
     path('upsert_challenge/', challenge.upsert_challenge_view, name='upsert_challenge'),
 
     # Flag

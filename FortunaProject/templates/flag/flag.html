@@ -3,60 +3,16 @@
 {% block extra_css %}
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <meta charset="UTF-8">
-<style>
-    .right-content {
-        padding: 20px;
-        /* 조정 가능한 패딩 값 */
-    }
-
-    .rounded-card {
-        border-radius: 10px;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        margin-bottom: 20px;
-    }
-
-    /* 스크롤바 스타일 추가 */
-    .scrollable-list {
-        max-height: 400px;
-        /* 필요한 최대 높이 설정 */
-        overflow-y: auto;
-        /* 세로 스크롤바 추가 */
-    }
-
-    /* Bootstrap container의 최대 너비를 오버라이드 (필요한 경우) */
-    .container {
-        max-width: 100%;
-    }
-
-    /* 좀 더 넓은 컨텐츠 영역을 위해 col 클래스의 패딩을 조정 */
-    .col-md-6 {
-        padding: 0 15px;
-        /* 좌우 패딩 조정 */
-    }
-    .modal-body {
-        max-height: calc(100vh - 210px); /* 뷰포트 높이에서 210px를 뺀 값 */
-        overflow-y: auto; /* 세로 스크롤바가 필요할 때 나타나도록 설정 */
-        overflow-x: hidden; /* 가로 스크롤바는 숨김 */
-        word-wrap: break-word; /* 단어가 길어지면 줄바꿈 */
-    }  
-</style>
 {% endblock extra_css %}
 
 {% block content %}
-<div class="right-content">
-    <!-- 라운드 정보 표시-->
-    <div class="rounded-card bg-white p-3 mb-3">
-        <h5 class="card-title">Current Round: {{ round }}</h5>
-    </div>
-    <!-- 메인 컨텐츠 섹션 -->
-    <div class="container-fluid mt-5"> <!-- Bootstrap의 container-fluid 클래스 사용 -->
-        <div class="row">
-            <!-- 왼쪽 컬럼 내용: AuthInfo 인스턴스의 flags 표시 -->
-            <div class="col-md-6" id="leftColumn">
-                <div class="rounded-card bg-white p-3 mb-3">
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Current Round: {{ round }}</h5>
                     <h5 class="card-title">Flags</h5>
-                    <!-- AuthInfo flags 반복하여 표시 -->
                     <ul class="list-group list-group-flush scrollable-list">
                         {% for info in round_info %}
                         <li class="list-group-item">
@@ -67,10 +23,10 @@
                     </ul>
                 </div>
             </div>
-            <!-- 오른쪽 컬럼 내용 -->
-            <div class="col-md-6">
-                <div class="rounded-card bg-white p-3 mb-3">
-                    <!-- Top Right Container 내용 -->
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
                     <h5 class="card-title">Current Challenge Info</h5>
                     <ul class="list-group">
                         {% for info in round_info %}
@@ -85,9 +41,8 @@
                         </li>
                         {% endfor %}
                     </ul>
-                </div>
-                <!-- Bottom Right Container -->
-                <div class="rounded-card bg-white p-3">
+                    <br>
+
                     <h5 class="card-title">Flag Functions</h5>
                     <!-- Flag Functions 폼 -->
                     <form action="{% url 'create_flag' %}" method="post" style="display: inline;">
@@ -96,40 +51,37 @@
                     </form>
                     <!-- Export AuthInfo 버튼 -->
                     <a href="{% url 'export_authinfo' %}" class="btn btn-secondary" style="margin-left: 10px;">Export
-                        Flag</a>
-                </div>
-                <!-- Team Buttons -->
-                <div>
-                    <div class="rounded-card bg-white p-3 mb-3">
-                        <h5 class="card-title">Team Actions</h5>
+                        Flag
+                    </a>
+                    <br>
+                    <br>
+
+                    <h5 class="card-title">Team Actions</h5>
                         {% for team in teams %}
                         <button type="button" class="btn btn-info" onclick="openModalForTeam('{{ team.name }}')">{{ team.name }}</button>
                         {% endfor %}
-                    </div>
                     <!-- Modal Structure -->
                     <div class="modal fade" id="actionTryModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h5 class="modal-title">Action Tries</h5>
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                              </button>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Action Tries</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body" id="modalBody">
+                                <!-- Content will be loaded here via JavaScript -->
+                                </div>
                             </div>
-                            <div class="modal-body" id="modalBody">
-                              <!-- Content will be loaded here via JavaScript -->
-                            </div>
-                          </div>
                         </div>
-                      </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<!-- Bootstrap CSS -->
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
 <!-- jQuery, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -147,7 +99,8 @@
       parsedData.forEach(actionTry => {
   const div = document.createElement('div');
   div.style.overflowWrap = 'break-word'; // 긴 단어도 줄바꿈 되도록 설정
-  div.textContent = `${actionTry.fields.attacker_name}: ${actionTry.fields.contents} - ${actionTry.fields.correct ? 'Correct' : 'Incorrect'}`;
+  const createdAt = new Date(actionTry.fields.created_at).toLocaleString();
+  div.textContent = `${actionTry.fields.attacker_name}(${actionTry.fields.created_at}): ${actionTry.fields.contents} - ${actionTry.fields.correct ? 'Correct' : 'Incorrect'}`;
   modalBody.appendChild(div);
 });
 
