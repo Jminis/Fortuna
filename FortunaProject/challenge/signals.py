@@ -8,7 +8,6 @@ from .models import GameBox
 
 @receiver(post_save, sender=GameBox)
 def gamebox_post_save(sender, instance, created, **kwargs):
-    print('challenge_signal')
     if created: # 데이터 인스턴스 생성에 대한 시그널
         pass
     else: # 데이터 인스턴스 업데이트에 대한 시그널

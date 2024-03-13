@@ -12,6 +12,10 @@ class ProjectAccessMiddleware:
         now = timezone.localtime(timezone.now())
         try:
             current_url_name = resolve(request.path_info).url_name
+<<<<<<< HEAD
+=======
+            
+>>>>>>> Uk
             # 가장 최근의 Config 인스턴스를 가져옴
             latest_config = Config.objects.latest('created_at')
             # 'play/'나 'status/' URL에 대한 요청 처리
@@ -22,7 +26,11 @@ class ProjectAccessMiddleware:
                     response = self.get_response(request)
                 else:
                     # 운영 시간 외이면 대회가 진행 중이지 않다는 페이지 출력해야 되는데 일단 manage로 리다이렉트
+<<<<<<< HEAD
                     manage_url = reverse('not_in_progress')
+=======
+                    manage_url = reverse('dashboard')  # 'manage/'의 URL 이름
+>>>>>>> Uk
                     return redirect(manage_url)
             else:
                 # 다른 URL 요청은 그대로 진행
@@ -30,6 +38,13 @@ class ProjectAccessMiddleware:
                 
         except Config.DoesNotExist:
             # Config가 없는 경우, 모든 요청을 'manage/' URL로 리다이렉트
+<<<<<<< HEAD
             response = self.get_response(request)
 
         return response
+=======
+            manage_url = reverse('dashboard')
+            return redirect(manage_url)
+
+        return response
+>>>>>>> Uk

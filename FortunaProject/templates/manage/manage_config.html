@@ -1,0 +1,42 @@
+{% extends 'manage/base.html' %}
+
+{% load static %}
+
+{% block extra_css %}
+{% endblock extra_css %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center">Config</h2>
+                    <!-- Config 데이터 출력 -->
+                    {% if config %}
+                        <div class="config-container">
+                            <div class="config-item"><span class="config-title">시작 시각:</span> {{ config.starttime }}</div>
+                            <div class="config-item"><span class="config-title">종료 시각:</span> {{ config.endtime }}</div>
+                            <div class="config-item"><span class="config-title">대회명:</span> {{ config.ctf_name }}</div>
+                            <div class="config-item"><span class="config-title">플래그 접두사:</span> {{ config.flag_head }}</div>
+                            <div class="config-item"><span class="config-title">각 라운드의 길이:</span> {{ config.round_time }}</div>
+                            <div class="config-item"><span class="config-title">체크다운 포인트:</span> {{ config.point_down }}</div>
+                            <div class="config-item"><span class="config-title">어택 포인트:</span> {{ config.point_attack }}</div>
+                            <div class="config-item"><span class="config-title">베이스 포인트:</span> {{ config.point_base }}</div>
+                            <div class="config-item"><span class="config-title">데이터베이스 이름:</span> {{ config.db_name }}</div>
+                            <div class="config-item"><span class="config-title">데이터베이스 포트번호:</span> {{ config.db_port }}</div>
+                            <div class="config-item"><span class="config-title">데이터베이스 유저네임:</span> {{ config.db_username }}</div>
+                            <div class="config-item"><span class="config-title">데이터베이스 패스워드:</span> {{ config.db_password }}</div>
+                        </div>
+                    {% else %}
+                        <p>Config 데이터가 없습니다.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+{% endblock extra_js %}

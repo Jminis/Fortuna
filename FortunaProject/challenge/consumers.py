@@ -16,6 +16,5 @@ class ChallengeConsumer(AsyncWebsocketConsumer):
 
     # 시그널로부터 메시지를 받아 클라이언트에 전송
     async def challenge_message(self, event):
-        print('challenge_message sented!')
         message = event["text"]
         await self.send(text_data=message)

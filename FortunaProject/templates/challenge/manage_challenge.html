@@ -55,12 +55,12 @@
                             </thead>
                             <!-- 테이블 본문 -->
                             <tbody>
-                                {% for gamebox in gameboxes %}
+                                {% for challenge in challenges %}
                                 <tr>
-                                    <td>{{ gamebox.challenge_id }}</td>
-                                    <td>{{ gamebox.challenge_name }}</td>
-                                    <td>{{ gamebox.description }}</td>
-                                    <td>{{ gamebox.score }}</td>
+                                    <td>{{ challenge.challenge_id }}</td>
+                                    <td>{{ challenge.challenge_name }}</td>
+                                    <td>{{ challenge.description }}</td>
+                                    <td>{{ challenge.score }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -87,14 +87,14 @@
                             </thead>
                             <!-- 테이블 본문 -->
                             <tbody>
-                                {% for challenge in challenges %}
+                                {% for gamebox in gameboxes %}
                                 <tr>
-                                    <td>{{ challenge.team_id }}</td>
-                                    <td>{{ challenge.ip }}</td>
-                                    <td>{{ challenge.port }}</td>
-                                    <td>{{ challenge.ssh_port }}</td>
-                                    <td>{{ challenge.ssh_user }}</td>
-                                    <td>{{ challenge.ssh_password }}</td>
+                                    <td>{{ gamebox.team_id }}</td>
+                                    <td>{{ gamebox.ip }}</td>
+                                    <td>{{ gamebox.port }}</td>
+                                    <td>{{ gamebox.ssh_port }}</td>
+                                    <td>{{ gamebox.ssh_user }}</td>
+                                    <td>{{ gamebox.ssh_password }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -123,31 +123,6 @@
         </div>
     </div>
 </div>
-<!-- 모달 -->
-{% for gamebox in gameboxes %}
-<div class="modal fade" id="editModal{{ gamebox.id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel{{ gamebox.id }}" aria-hidden="true">
-     <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel{{ gamebox.id }}">Edit GameBox</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form method="post" action="{% url 'update_challenge' gamebox.id %}">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-primary">Save changes</button>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>    
-</div>
-{% endfor %}
 {% endblock content %}
 
 {% block extra_js %}
