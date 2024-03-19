@@ -53,16 +53,22 @@
             <!-- 왼쪽 컬럼 내용 -->
             <div class="col-md-6" id="leftColumn">
                 <div class="rounded-card bg-white p-3 mb-3">
+                    {% if round != -1%}
                     {% include 'log/log_.html' %} <!-- 로그 파일을 포함 -->
+                    {% endif %}
                 </div>
             </div>
             <div class="col-md-6">
                 <!-- 오른쪽 컬럼 내용 -->
                 <div class="rounded-card bg-white p-3 mb-3">
+                    {% if round != -1%}
                     {% include 'challenge/challenge.html' %}
+                    {% endif %}
                 </div>
                 <div class="rounded-card bg-white p-3">
+                    {% if round  != -1%}
                     {% include 'rank/rank.html' %}
+                    {% endif %}
                 </div>
             </div>
         </div>

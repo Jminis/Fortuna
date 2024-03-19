@@ -1,7 +1,7 @@
 from django.shortcuts import render
 import hashlib
 import secrets
-from challenge.models import GameBox
+from challenge.models import GameBox, Challenge
 from authentication.models import AuthInfo
 from account.models import Team
 from config.models import Config
@@ -12,6 +12,7 @@ from django.http import HttpResponse
 from django.core import serializers
 from django.http import JsonResponse
 from django.utils import timezone
+
 
 def get_round_info():
     # 현재 시간과 대회 시작 시간을 비교하여 현재 라운드 계산
@@ -58,6 +59,7 @@ def flag_view(request):
         'teams': teams,
     })
 
+
 def calculate_rounds():
     try:
         config = Config.objects.latest('created_at')
@@ -67,25 +69,28 @@ def calculate_rounds():
         total_rounds = int(total_minutes // config.round_time)
         return 0, total_rounds  # 첫 라운드와 마지막 라운드 번호 반환
     except Config.DoesNotExist:
-        return 1, 1  # Config가 없는 경우 기본적으로 하나의 라운드만 있다고 가정
+        return 1, 1
 
 def generate_flag_for_gamebox(team_id, challenge_id):
     flags_created = []
-    first_round, last_round = calculate_rounds()  # 첫 라운드와 마지막 라운드 계산
+    first_round, last_round = calculate_rounds()
 
-    for rounds in range(first_round, last_round+1):  # 모든 라운드에 대해 플래그 생성
+    for rounds in range(first_round, last_round + 1):
         try:
             gamebox = GameBox.objects.get(team_id=team_id, challenge_id=challenge_id)
+            challenge = Challenge.objects.get(challenge_id=challenge_id)  # Challenge 인스턴스를 가져옵니다.
+            team = Team.objects.get(team_id=team_id)
             salt = secrets.token_hex(8)
             raw_flag = f"{rounds}{gamebox.challenge_id}{salt}"
             hashed_flag = hashlib.sha256(raw_flag.encode()).hexdigest()
-            #config로부터 접두사 가져와야 함!
+            #접두사 config에서 가져오도록 수정
             final_flag = f"SF{{{hashed_flag}}}"
 
             # AuthInfo 인스턴스에 플래그 저장 또는 갱신
             obj, created = AuthInfo.objects.get_or_create(
-                challenge_name=gamebox.challenge_name,
+                challenge_name=challenge.challenge_name,
                 team_id=gamebox.team_id,
+                team_name=team.name,
                 challenge_id=gamebox.challenge_id,
                 round=rounds,
                 defaults={'flag': final_flag}
@@ -96,8 +101,8 @@ def generate_flag_for_gamebox(team_id, challenge_id):
 
             flags_created.append(final_flag)
 
-        except GameBox.DoesNotExist:
-            continue  # 해당 team_id와 challenge_id를 가진 GameBox가 없는 경우
+        except (GameBox.DoesNotExist, Challenge.DoesNotExist):
+            continue
 
     return flags_created
 
@@ -115,6 +120,7 @@ def create_flag():
     for gamebox in gameboxes:
         flags_created = generate_flag_for_gamebox(gamebox.team_id, gamebox.challenge_id)
         all_flags_created.extend(flags_created)
+        # print(gamebox.team_id, ', ', gamebox.challenge_id, ': ', flags_created)
 
     return all_flags_created
 

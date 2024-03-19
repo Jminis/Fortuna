@@ -6,6 +6,7 @@ class AuthInfo(models.Model):
     challenge_id = models.IntegerField()
     round = models.IntegerField()
     flag = models.TextField()
+    team_name = models.CharField(max_length=255, null=True)
 
     def __str__(self):
         return f"Team ID: {self.team_id}, Challenge ID: {self.challenge_id}"

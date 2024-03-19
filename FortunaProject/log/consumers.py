@@ -8,6 +8,8 @@ from account.models import Team
 from authentication.models import AuthInfo
 from config.models import Config
 from django.utils import timezone
+import logging
+from django.db import IntegrityError
 
 class LogConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -77,7 +79,7 @@ class LogConsumer(AsyncWebsocketConsumer):
                 correct = False
                 return
 
-            await self.send(text_data=json.dumps({'toast': f"You've been attacked {auth_info.team_id}"}))
+            await self.send(text_data=json.dumps({'toast': f"You've been attacked {auth_info.team_name}"}))
 
             #사용자 입력 로그 갱신
             await database_sync_to_async(self.create_action_try)(user, flag, correct, attacker_team_id, round)
@@ -91,22 +93,35 @@ class LogConsumer(AsyncWebsocketConsumer):
 
                 #공격 로그(actionlog) 생성                
                 await database_sync_to_async(self.create_action_log)(user, auth_info, flag, round, attacker_team_id)
-                return f"{auth_info.team_id} is attacked by {user}"  # user를 사용해 사용자 이름을 반환
+                return f"{auth_info.team_name} is attacked by {user}"  # user를 사용해 사용자 이름을 반환
         except AuthInfo.DoesNotExist:
             await self.send(text_data=json.dumps({'toast': f"Sent: {flag}"}))
             await database_sync_to_async(self.create_action_try)(user, flag, correct, attacker_team_id, round)  # Incorrect 플래그에 대한 ActionTry 생성
 
 
-    def create_action_log(self, user, auth_info, flag, round, attacker_team_id):
-######################################
-        ActionLog.objects.create(
-            attacker_name = user,
-            #attacked_name=auth_info._name,
-            attacked_team_id=auth_info.team_id,
-            attacker_team_id=attacker_team_id,
-            challenge_id=auth_info.challenge_id,
-            round=round
-        )
+    # async def create_action_log(self, user, auth_info, flag, round, attacker_team_id):
+    #     ActionLog.objects.create(
+    #         attacker_name = user,
+    #         attacked_name=auth_info.team_name,
+    #         attacked_team_id=auth_info.team_id,
+    #         attacker_team_id=attacker_team_id,
+    #         challenge_id=auth_info.challenge_id,
+    #         round=round
+    #     )
+
+    async def create_action_log(self, user, auth_info, flag, round, attacker_team_id):
+        try:
+            # 이 부분을 비동기로 실행하기 위해 database_sync_to_async를 사용
+            action_log = await database_sync_to_async(ActionLog.objects.create)(
+                attacker_name=user,
+                contents=flag,  # 'contents' 변수가 정의되어 있지 않으므로, 예제에서는 'flag'를 사용합니다.
+                correct=True,  # 'correct' 변수가 이 컨텍스트에서 정의되지 않았으므로, 예제의 목적을 위해 True를 사용합니다.
+                attacker_team_id=attacker_team_id,
+                round=round
+            )
+            logger.info(f"ActionLog created successfully: {action_log}")
+        except Exception as e:
+            logger.error(f"Failed to create ActionLog: {e}")
 
     def create_action_try(self, user, contents, correct, attacker_team_id, round):
         ActionTry.objects.create(

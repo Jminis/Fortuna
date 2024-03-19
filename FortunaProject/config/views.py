@@ -2,9 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Config
 from .forms import ConfigForm
 
-# Create your views here.
 def config_view(request):
-<<<<<<< HEAD
     #config 입력
     if request.method == "POST":
         form = ConfigForm(request.POST)
@@ -27,9 +25,3 @@ def not_in_progess_view(request):
     return render(request, 'config/not_in_progress.html')
 
 
-=======
-    # config = Config.objects.first()  # Config 모델의 첫 번째 레코드를 가져옴
-    config = Config.objects.latest('created_at')
-    context = {'config': config}
-    return render(request, 'manage/manage_config.html', context)
->>>>>>> Uk

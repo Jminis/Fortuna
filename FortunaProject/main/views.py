@@ -18,28 +18,27 @@ def index_view(request):
     
     return render(request, 'index.html', context)
 
-def play_view(request):
-    actions = ActionLog.objects.all().order_by('created_at')[:50]
-<<<<<<< HEAD
-    try:
-        config = Config.objects.latest('created_at')
-        #라운드 계산
-        now = timezone.localtime()
-        elapsed_time = now - timezone.localtime(config.starttime)
-        total_minutes = int(elapsed_time.total_seconds() // 60)
-        current_round = total_minutes // config.round_time
-    except Config.DoesNotExist:
-        config = 0
-        current_round = 0   
-    
-=======
-    config = Config.objects.latest('created_at')
-    
-    now = timezone.localtime()
-    elapsed_time = now - timezone.localtime(config.starttime)
-    total_minutes = int(elapsed_time.total_seconds() // 60)
-    current_round = total_minutes // config.round_time
+def competition_time_required(view_func):
+    def _wrapped_view_func(request, *args, **kwargs):
+        now = timezone.localtime(timezone.now())
+        try:
+            latest_config = Config.objects.latest('created_at')
+            if latest_config.starttime <= now <= latest_config.endtime:
+                elapsed_time = now - timezone.localtime(latest_config.starttime)
+                total_minutes = int(elapsed_time.total_seconds() // 60)
+                current_round = total_minutes // latest_config.round_time
+                kwargs['current_round'] = current_round  # current_round를 kwargs에 추가
+                return view_func(request, *args, **kwargs)
+            else:
+                kwargs['current_round'] = -1  # 대회 진행 시간이 아닐 경우
+                return view_func(request, *args, **kwargs)
+        except Config.DoesNotExist:
+            kwargs['current_round'] = -1  # Config가 존재하지 않을 경우
+            return view_func(request, *args, **kwargs)
+    return _wrapped_view_func
 
->>>>>>> Uk
-    context = {'actions': actions, 'config': config, 'round':current_round}
+@competition_time_required
+def play_view(request, current_round):  # current_round를 인자로 받음
+    actions = ActionLog.objects.all().order_by('created_at')[:50]
+    context = {'actions': actions, 'round': current_round}
     return render(request, 'play.html', context)
