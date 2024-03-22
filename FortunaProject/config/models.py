@@ -9,10 +9,6 @@ class Config(models.Model):
     point_down = models.IntegerField()
     point_attack = models.IntegerField()
     point_base = models.IntegerField()
-    db_name = models.TextField()
-    db_port = models.IntegerField()
-    db_username = models.TextField()
-    db_password = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
