@@ -25,9 +25,9 @@
                             <thead>
                                 <tr>
                                     <th>팀</th>
-                                    <th>상태 1</th>
-                                    <th>상태 2</th>
-                                    <th>상태 3</th>
+                                    {% for header in status_headers %}
+                                    <th>Gamebox {{ header }}</th>
+                                    {% endfor %}
                                 </tr>
                             </thead>
                             <tbody>
@@ -35,7 +35,7 @@
                                 <tr>
                                     <td>{{ team }}</td>
                                     {% for status in statuses %}
-                                    <td class="{% if status == 'o' %}status-active{% else %}status-inactive{% endif %}">{{ status }}</td>
+                                    <td class="{% if status == 'active' %}status-active{% else %}status-inactive{% endif %}">{{ status }}</td>
                                     {% endfor %}
                                 </tr>
                                 {% endfor %}
@@ -45,6 +45,9 @@
                 </div>
             </div>
         </div>
+        
+        
+        
     </div>
     <br>
     <div class="row">

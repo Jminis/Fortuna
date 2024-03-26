@@ -11,14 +11,14 @@ def manage_challenge_view(request):
     context = {}
     return render(request, 'challenge/manage_challenge.html', context)
 
+import paramiko
+from challenge.models import GameBox
+
 @login_required
 def dashboard_view(request):
-    # 현재 대회 설정 불러오기
     current_config = Config.objects.first()
-    # 현재 시간
     now = timezone.now()
-    
-    # 현재 라운드 계산
+
     if current_config:
         round_duration = timedelta(minutes=current_config.round_time)
         elapsed_time = now - current_config.starttime
@@ -29,13 +29,33 @@ def dashboard_view(request):
         current_round = 0
         rounds_left = 0
         total_rounds = 0
+
+    # Initialize gamebox status dictionary
+    gamebox_status = {}
     
-    # Gamebox 상태 (실제 상태는 모델에서 가져와야 함, 여기서는 예시)
-    gamebox_status = {
-        'A-team': ['inactive', 'active', 'inactive'],
-        'B-team': ['active', 'inactive', 'active'],
-        'C-team': ['active', 'active', 'active']
-    }
+    # Fetch all GameBoxes
+    gameboxes = GameBox.objects.all()
+
+    # Paramiko SSH client setup
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+    for gamebox in gameboxes:
+        if gamebox.ip and gamebox.ssh_port:
+            try:
+                ssh.connect(gamebox.ip, port=gamebox.ssh_port, username=gamebox.ssh_user, password=gamebox.ssh_password, timeout=5)
+                status = 'active'
+            except Exception as e:
+                status = 'inactive'
+            finally:
+                ssh.close()
+
+            # Update gamebox status, grouping by team_id
+            if gamebox.team_id in gamebox_status:
+                gamebox_status[gamebox.team_id].append(status)
+            else:
+                gamebox_status[gamebox.team_id] = [status]
+    
     
     # Django 로그 파일 읽기
     log_file_path = os.path.join('./', 'django.log')
@@ -44,14 +64,19 @@ def dashboard_view(request):
             django_log = tail(file, lines=100)  # Call the adjusted tail function
     except FileNotFoundError:
         django_log = "Log file not found."
-    
+
+    gamebox_status_list = {team: statuses for team, statuses in gamebox_status.items()}
+    max_gameboxes = max([len(statuses) for statuses in gamebox_status.values()], default=0)
+    status_headers = range(1, max_gameboxes + 1)
+
     context = {
         'current_config': current_config,
         'current_time': now.strftime('%H:%M'),
         'current_round': current_round,
         'rounds_left': rounds_left,
         'total_rounds': total_rounds,
-        'gamebox_status': gamebox_status,
+        'status_headers': status_headers,
+        'gamebox_status': gamebox_status_list,
         'django_log': django_log,
     }
     

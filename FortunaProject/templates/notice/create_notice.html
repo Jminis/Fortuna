@@ -4,7 +4,6 @@
 <div class="container-fluid mt-4">
     <div class="row">
         <div class="col-md-6">
-            <div class="card">
                 <div class="card-body">
                     <h2 class="card-title text-center">Notice Create</h2>
                     <h2></h2>
@@ -14,30 +13,27 @@
                         <button type="submit">Submit</button>
                     </form>
                 </div>
-            </div>
         </div>
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h2 class="card-title text-center">Notice list</h2>
-                    <ul class="notices-list">
-                        {% for notice in notices %}
-                        <li class="notice-item">
-                            <div>
-                                <div class="notice-title">{{ notice.title }}</div>
-                                <div class="notice-content">{{ notice.content }}</div>
-                                <div class="notice-date">{{ notice.created_at }}</div>
-                            </div>
-                            <div>
-                                <form method="post" action="{% url 'delete_notice' notice.id %}">
-                                    {% csrf_token %}
-                                    <button type="submit">Delete</button>
-                                </form>
-                            </div>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
+            <div class="card-body">
+                <h2 class="card-title text-center">Notice list</h2>
+                <ul class="notices-list">
+                    {% for notice in notices %}
+                    <li class="notice-item">
+                        <div>
+                            <div class="notice-title">{{ notice.title }}</div>
+                            <div class="notice-content">{{ notice.content }}</div>
+                            <div class="notice-date">{{ notice.created_at }}</div>
+                        </div>
+                        <div>
+                            <form method="post" action="{% url 'delete_notice' notice.id %}">
+                                {% csrf_token %}
+                                <button type="submit">Delete</button>
+                            </form>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
     </div>

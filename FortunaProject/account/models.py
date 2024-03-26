@@ -21,7 +21,7 @@ class Team(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=255, unique=True)
     logo = models.CharField(max_length=255, null=True, blank=True)
     score = models.FloatField(null=True, blank=True)
-    team_id = models.PositiveIntegerField(unique=True, blank=True)
+    team_id = models.PositiveIntegerField(unique=True, null=True, blank=True)
     token = models.CharField(max_length=255, null=True, blank=True)
     is_staff = models.BooleanField(default=False)
 
