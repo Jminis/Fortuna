@@ -55,13 +55,11 @@ class LogConsumer(AsyncWebsocketConsumer):
     async def check_flag_and_create_log(self, flag):
         user = self.scope['user']
         correct = False  # 초기값을 False로 설정
-
         team = await database_sync_to_async(Team.objects.get)(name=user)
         attacker_team_id = team.team_id
 
         round = await self.calculate_current_round()
 
-        # Asynchronously find a matching AuthInfo and create an ActionLog
         try:
             auth_info = await database_sync_to_async(AuthInfo.objects.get)(flag=flag, round=round)
             correct = True  # 일치하는 flag가 있을 경우 correct를 True로 설정
@@ -73,9 +71,15 @@ class LogConsumer(AsyncWebsocketConsumer):
                 attacker_team_id,
                 round
             )
-            # 이미 제출된 플래그일 경우 ==> 이거 지금 안됨
+            # 이미 제출된 플래그일 경우
             if existing_log:
                 await self.send(text_data=json.dumps({'toast': "이미 제출된 플래그입니다!"}))
+                correct = False
+                return
+
+            #같은 팀을 공격한 경우
+            if auth_info.team_name == str(user):
+                await self.send(text_data=json.dumps({'toast': "다른 팀을 공격해주세요."}))
                 correct = False
                 return
 
