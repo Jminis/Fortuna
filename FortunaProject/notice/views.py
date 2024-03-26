@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Notices
 from .forms import NoticeForm
@@ -9,6 +9,8 @@ def notice_view(request):
 
 @login_required
 def create_notice_view(request):
+    notices = Notices.objects.all()  # 공지사항 목록 불러오기
+
     if request.method == 'POST':
         form = NoticeForm(request.POST)
         if form.is_valid():
@@ -16,4 +18,13 @@ def create_notice_view(request):
             return redirect('create_notice')
     else:
         form = NoticeForm()
-    return render(request, 'notice/create_notice.html', {'form': form})
+
+    return render(request, 'notice/create_notice.html', {'form': form, 'notices': notices})
+
+
+@login_required
+def delete_notice_view(request, notice_id):
+    if request.method == 'POST':
+        notice = get_object_or_404(Notices, id=notice_id)
+        notice.delete()
+    return redirect('create_notice')

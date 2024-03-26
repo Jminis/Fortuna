@@ -4,11 +4,18 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from .forms import TeamCreationForm
 from .models import Team
-from django.template.loader import render_to_string
+from functools import wraps
+
+def admin_required(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.user.is_staff and not request.user.is_superuser:
+            return redirect('index')
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
 
 # Config 파일 로드
 config_path = os.path.join(settings.BASE_DIR, 'config.json')
@@ -34,11 +41,14 @@ def login_view(request):
     return render(request, 'account/login.html', {'config': config_data['login']})
 
 @login_required
+@admin_required
 def manage_team_view(request):
     if request.method == 'POST':
         form = TeamCreationForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            team = form.save(commit=False)
+            team.set_password(form.cleaned_data['password'])
+            team.save()
             messages.success(request, 'Team created successfully!')
             return redirect('manage_team')
     else:
@@ -48,9 +58,14 @@ def manage_team_view(request):
     return render(request, 'account/manage_team.html', {'form': form, 'teams': teams})
 
 @login_required
+@admin_required
 def delete_team_view(request, team_id):
     try:
         team = Team.objects.get(id=team_id)
+        if team.is_superuser or team.is_staff:
+            messages.error(request, "Cannot delete an admin account.")
+            return redirect('manage_team')
+        
         team.delete()
         messages.success(request, 'Team deleted successfully.')
     except Team.DoesNotExist:
@@ -58,31 +73,27 @@ def delete_team_view(request, team_id):
     return redirect('manage_team')
 
 @login_required
+@admin_required
 def update_team_view(request, team_id):
+    
     try:
         team = Team.objects.get(id=team_id)
     except Team.DoesNotExist:
-        return JsonResponse({'error': 'Team not found'}, status=404)
+        messages.error(request, 'Team not found.')
+        return redirect('manage_team')
 
     if request.method == 'POST':
         form = TeamCreationForm(request.POST, request.FILES, instance=team)
         if form.is_valid():
-            form.save()
-            return JsonResponse({'message': 'Team updated successfully'})
-        else:
-            return JsonResponse({'error': form.errors}, status=400)
-        
-@login_required
-def update_team_form(request, team_id):
-    try:
-        team = Team.objects.get(id=team_id)
-    except Team.DoesNotExist:
-        return JsonResponse({'error': 'Team not found'}, status=404)
+            team = form.save(commit=False)
+            team.set_password(form.cleaned_data['password'])
+            team.save()
+            messages.success(request, 'Team updated successfully!')
+            return redirect('manage_team')
+    else:
+        form = TeamCreationForm(instance=team)
 
-    form = TeamCreationForm(instance=team)
-    # 폼을 HTML로 렌더링합니다. 이 HTML은 AJAX 요청에 대한 응답으로 사용됩니다.
-    form_html = render_to_string('account/team_form.html', {'form': form}, request)
-    return JsonResponse({'form_html': form_html})
+    return render(request, 'account/manage_team.html', {'form': form, 'team_id': team_id})
 
 def logout_view(request):
     logout(request)

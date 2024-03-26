@@ -13,6 +13,7 @@
         border-radius: 10px; /* 카드의 모서리를 둥글게 */
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* 카드에 그림자 추가 */
         overflow: hidden; /* 내용이 둥근 모서리를 넘어갈 경우 숨김 */
+        margin-bottom: 20px;
     }
     .logo-center {
         text-align: center; /* 로고 이미지를 중앙에 위치 */
@@ -25,9 +26,6 @@
     }
     .footer-space {
         height: 50px; /* 하단 여백 공간 추가 */
-    }
-    .rounded-card {
-        margin-bottom: 20px;
     }
 
     /* 반응형 웹 디자인을 위한 미디어 쿼리 */
@@ -44,22 +42,33 @@
 {% endblock extra_css %}
 
 {% block content %}
+
+<div class="text-center">
+    <h2>Round {{round}}</h2> 
+</div>
+
     <!-- 메인 컨텐츠 섹션 -->
     <div class="container mt-5">
         <div class="row">
             <!-- 왼쪽 컬럼 내용 -->
             <div class="col-md-6" id="leftColumn">
                 <div class="rounded-card bg-white p-3 mb-3">
+                    {% if round != -1%}
                     {% include 'log/log_.html' %} <!-- 로그 파일을 포함 -->
+                    {% endif %}
                 </div>
             </div>
             <div class="col-md-6">
                 <!-- 오른쪽 컬럼 내용 -->
                 <div class="rounded-card bg-white p-3 mb-3">
+                    {% if round != -1%}
                     {% include 'challenge/challenge.html' %}
+                    {% endif %}
                 </div>
                 <div class="rounded-card bg-white p-3">
+                    {% if round  != -1%}
                     {% include 'rank/rank.html' %}
+                    {% endif %}
                 </div>
             </div>
         </div>

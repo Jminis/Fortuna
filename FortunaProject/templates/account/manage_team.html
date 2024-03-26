@@ -1,10 +1,10 @@
 {% extends 'manage/base.html' %}
-
+{% load static %}
 {% block content %}
+
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <div class="container-fluid mt-4">
     <div class="row">
         <!-- Left: Team creation form -->
@@ -51,11 +51,15 @@
                                     <td>{{ team.score }}</td>
                                     <td>
                                         <!-- Update button -->
-                                        <button type="button" class="btn btn-info update-btn"
-                                            data-team-id="{{ team.id }}" data-team-name="{{ team.name }}"
-                                            data-team-score="{{ team.score }}"
-                                            data-team-logo-url="{{ team.logo.url }}">Update</button>
-
+                                        <button type="button" class="btn btn-info update-btn" data-toggle="modal"
+                                            data-target="#updateTeamModal" 
+                                            data-team-id="{{ team.id }}"
+                                            data-team-name="{{ team.name }}" data-team-score="{{ team.score }}"
+                                            data-team-team-id="{{ team.team_id }}"
+                                            data-team-password="{{ team.password }}"
+                                            data-team-logo-url="{{ team.logo.url }}"
+                                            data-team-is-staff="{{ team.is_staff }}">Update
+                                        </button>
                                         <!-- Delete button -->
                                         <form method="post" action="{% url 'delete_team' team.id %}"
                                             style="display: inline;">
@@ -81,14 +85,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="updateTeamModalLabel">Update Team</h5>
-                <button type="button" class="close" data-dismiss="modal" aria -label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form id="update-team-form" method="post" enctype="multipart/form-data">
+                <form id="team-form" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <!-- 폼 필드들은 여기에 배치됩니다. JavaScript를 사용하여 동적으로 로드합니다. -->
+                    {{ form.as_p }} <!-- Django 폼 렌더링 -->
                 </form>
             </div>
             <div class="modal-footer">
@@ -97,40 +101,65 @@
             </div>
         </div>
     </div>
-
 </div>
+
 <script>
     $(document).ready(function () {
         $('.update-btn').on('click', function () {
+            var isAdmin = $(this).data('is-staff') === true; // 관리자 여부 확인
+            // 모든 필드를 기본적으로 보이게 설정
+            $('#updateTeamModal .form-control').show();
+            $('#updateTeamModal .form-group').show();
+            console.log(isAdmin)
+            if (isAdmin) {
+                $('#updateTeamModal .form-control').not('[name="name"], [name="password"]').hide();
+                $('#updateTeamModal .form-group').not(':has([name="name"]), :has([name="password"])').hide();
+            }
+
             var teamId = $(this).data('team-id');
-            $.ajax({
-                url: '/manage/update-form/' + teamId + '/',
-                method: 'GET',
-                success: function (data) {
-                    $('#update-team-form').html(data.form_html);
-                    $('#update-team-form').attr('action', '/manage/update/' + teamId + '/');
-                    $('#updateTeamModal').modal('show');
-                }
-            });
+            var teamName = $(this).data('team-name');
+            var teamPassword = $(this).data('team-password');
+            var teamScore = $(this).data('team-score');
+            var teamTeamId = $(this).data('team-team-id');
+            var teamToken = $(this).data('team-token');
+            var teamIsStaff = $(this).data('team-is-staff') === 'True'; // Boolean 값 처리
+            console.log(teamTeamId);
+            
+
+            // 모달의 폼 필드에 값을 설정
+            $('#updateTeamModal input[name="name"]').val(teamName);
+            $('#updateTeamModal input[name="password"]').val(teamPassword);
+            $('#updateTeamModal input[name="score"]').val(teamScore);
+            $('#updateTeamModal input[name="team_id"]').val(teamTeamId);
+            $('#updateTeamModal input[name="token"]').val(teamToken);
+            $('#updateTeamModal input[name="is_staff"]').prop('checked', teamIsStaff);
+
+            $('#team-form').attr('action', '/manage/update_team/' + teamId);
         });
 
         $('#save-update').on('click', function () {
+            var formData = new FormData($('#team-form')[0]);
+
             $.ajax({
-                url: $('#update-team-form').attr('action'),
-                method: 'POST',
-                data: new FormData($('#update-team-form')[0]),
+                url: $('#team-form').attr('action'),
+                type: 'POST',
+                data: formData,
                 processData: false,
                 contentType: false,
-                success: function () {
-                    alert('Team updated successfully');
-                    location.reload();
+                success: function (response) {
+                    // Handle success - e.g., close modal, refresh team list
+                    $('#updateTeamModal').modal('hide');
+                    location.reload(); // Simple way to refresh the page
                 },
-                error: function
-                    (xhr) {
-                    alert('Error: ' + xhr.responseText);
+                error: function (response) {
+                    // Handle error
+                    alert('Error updating team');
                 }
             });
         });
     });
 </script>
+</body>
+
+</html>
 {% endblock %}

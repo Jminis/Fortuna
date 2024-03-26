@@ -1,0 +1,66 @@
+{% extends 'manage/base.html' %}
+{% block extra_css %}
+{% endblock extra_css %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center">CTF Status</h2>
+                    <p><strong>대회 이름:</strong> {{ current_config.ctf_name }}</p>
+                    <p><strong>현재 시각:</strong> {{ current_time }}</p>
+                    <p><strong>현재 라운드:</strong> {{ current_round }} / {{ total_rounds }}</p>
+                    <p><strong>남은 라운드:</strong> {{ rounds_left }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center">Gamebox Status</h2>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>팀</th>
+                                    {% for header in status_headers %}
+                                    <th>Gamebox {{ header }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for team, statuses in gamebox_status.items %}
+                                <tr>
+                                    <td>{{ team }}</td>
+                                    {% for status in statuses %}
+                                    <td class="{% if status == 'active' %}status-active{% else %}status-inactive{% endif %}">{{ status }}</td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center">Django Log</h2>
+                        <div class="dashboard-log">
+                            {{ django_log }}
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
