@@ -1,0 +1,36 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'manage.css' %}" rel="stylesheet" />
+    {% block extra_css %}{% endblock extra_css %}
+</head>
+<body>
+    <div class="manage-container">
+        <div class="manage-left-container">
+            <nav class="manage-navbar">
+                <div class="manage-nav-logo">
+                    <a href="/manage/">
+                        <img src="{% static 'demologo.png' %}" alt="logo">
+                    </a>
+                </div>
+                <a href="/manage/team" class="manage-nav-item">Team</a>
+                <a href="/manage/challenge" class="manage-nav-item">Challenge</a>
+                <a href="/manage/notice" class="manage-nav-item">Notice</a>
+                <a href="/manage/flag" class="manage-nav-item">Flag</a>
+                <a href="/manage/config" class="manage-nav-item">Config</a>
+            </nav>
+            <div class="manage-footer">
+                Powered by Fortuna
+            </div>
+        </div>
+        <div class="manage-right-content">
+            {% block content %}
+            {% endblock content %}
+        </div>
+    </div>
+{% block extra_js %}{% endblock extra_js %}
+</body>
+</html>

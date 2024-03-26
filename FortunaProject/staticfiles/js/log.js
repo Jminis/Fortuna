@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () { //getElementById 전
         let inputVal = document.getElementById('inputField').value;
 
         // 토스트 메시지 표시
-        showToast("메시지 전송: " + inputVal);
+        //showToast("메시지 전송: " + inputVal);
 
         socket.send(JSON.stringify({data: inputVal}));
         document.getElementById('inputField').value = '';

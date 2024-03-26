@@ -1,0 +1,7 @@
+<!-- manage_update.html -->
+{% load static %}
+<form id="update-team-form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="hidden" name="team_id" value="{{ team.id }}">
+</form>

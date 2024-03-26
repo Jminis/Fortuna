@@ -1,8 +1,11 @@
 from django.shortcuts import render
 from itertools import groupby
 from operator import attrgetter
+from config.models import Config
+from main.views import competition_time_required
 
-def status_view(request):
+@competition_time_required
+def status_view(request, current_round):
     from challenge.models import GameBox
     game_boxes = GameBox.objects.all().order_by('team_id', 'challenge_id')
 
@@ -17,4 +20,4 @@ def status_view(request):
             }
             for box in boxes
         ]
-    return render(request, 'status/status.html', {'grouped_game_boxes': grouped_game_boxes})
+    return render(request, 'status/status.html', {'grouped_game_boxes': grouped_game_boxes, 'round': current_round})

@@ -1,0 +1,132 @@
+{% extends 'manage/base.html' %}
+
+{% load static %}
+
+{% block extra_css %}
+{% endblock extra_css %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Left: Team creation form -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center">Team List</h2>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <!-- 테이블 헤더 -->
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>TeamID</th>
+                                    <th>Logo</th>
+                                </tr>
+                            </thead>
+                            <!-- 테이블 본문 -->
+                            <tbody>
+                                {% for team in teams %}
+                                <tr>
+                                    <td>{{ team.name }}</td>
+                                    <td>{{ team.team_id }}</td>
+                                    <td>{{ team.logo }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center">Challenge List</h2>
+                    <div class="table-responsive" style="padding-bottom: 8px;">
+                        <table class="table">
+                            <!-- 테이블 헤더 -->
+                            <thead>
+                                <tr>
+                                    <th>Challenge ID</th>
+                                    <th>Challenge Name</th>
+                                    <th>Description</th>
+                                    <th>Score</th>
+                                </tr>
+                            </thead>
+                            <!-- 테이블 본문 -->
+                            <tbody>
+                                {% for challenge in challenges %}
+                                <tr>
+                                    <td>{{ challenge.challenge_id }}</td>
+                                    <td>{{ challenge.challenge_name }}</td>
+                                    <td>{{ challenge.description }}</td>
+                                    <td>{{ challenge.score }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center">Gamebox List</h2>
+                    <div class="table-responsive" style="padding-bottom: 8px;">
+                        <table class="table">
+                            <!-- 테이블 헤더 -->
+                            <thead>
+                                <tr>
+                                    <th>Team ID</th>
+                                    <th>IP</th>
+                                    <th>Port</th>
+                                    <th>SSH Port</th>
+                                    <th>SSH Username</th>
+                                    <th>SSH Password</th>
+                                </tr>
+                            </thead>
+                            <!-- 테이블 본문 -->
+                            <tbody>
+                                {% for gamebox in gameboxes %}
+                                <tr>
+                                    <td>{{ gamebox.team_id }}</td>
+                                    <td>{{ gamebox.ip }}</td>
+                                    <td>{{ gamebox.port }}</td>
+                                    <td>{{ gamebox.ssh_port }}</td>
+                                    <td>{{ gamebox.ssh_user }}</td>
+                                    <td>{{ gamebox.ssh_password }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <form action="{% url 'upsert_challenge' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">Create Gameboxes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Displaying list of teams -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center">Create Challenge</h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary">Create Challenge</button>
+                    </form>    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+{% endblock extra_js %}

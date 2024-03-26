@@ -4,6 +4,7 @@
     .challenge-row {
         display: flex;
         justify-content: space-between;
+        flex-wrap: wrap;
     }
 
     .challenge-button {
@@ -49,12 +50,6 @@
 
 </style>
 {% load static %}
-<div class="challenge-button">
-    <button id="test" onclick="updateGameboxStatus(1, 2, true, true)">Update GameBox</button>
-</div>
-<div class="challenge-button">
-    <button id="test" onclick="updateGameboxStatus(1, 2, false, false)">Update GameBox</button>
-</div>`;
 <!-- 챌린지 목록 -->
 <div class="challenge-list">
     <h2>Challenges</h2>
@@ -104,6 +99,7 @@
         const container = document.querySelector('.challenge-row');
         const test_button = ``;
         container.innerHTML = ''+test_button;  // 기존 내용을 비움
+        console.log(gameboxes)
         gameboxes.forEach(gamebox => {
             let background_color_style;
             if (gamebox.is_down == true) {
@@ -155,15 +151,15 @@
             .then(response => response.json())
             .then(data => {
                 // 모달 내용 업데이트
-                document.querySelector('#myModal .modal-container-title').textContent = data.challenge_id;
+                document.querySelector('#myModal .modal-container-title').textContent = data.challenge_name;
                 document.querySelector('#myModal .modal-container-body').innerHTML = `
-                    <p>문제 설명</p>
+                    <h2>문제 설명</h2><br>
                     <p>${data.description}</p>
+                    <br>
                     <div>score: ${data.score}</div>
+                    <div>접속정보 = ${data.ip}:${data.port}</div>
                 `;
-                document.querySelector('#myModal .modal-container-footer').textContent = `
-                    접속정보 = ${data.ip}:${data.port}
-                `;
+                document.querySelector('#myModal .modal-container-footer').innerHTML = ``;
                 // 모달 표시
                 var modal = document.getElementById("myModal");
                 modal.style.display = "block";

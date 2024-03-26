@@ -1,0 +1,17 @@
+{
+    "ctf_name": "Fortuna",
+    "starttime": "2024-03-07T00:00:00+09:00",
+    "endtime": "2024-03-07T20:45:00+09:00",
+    "flag_head": "SF",
+    "round_time": 10,
+    "pointdown": 5,
+    "pointattack": 10,
+    "pointbase": 100,
+    "database": {
+      "db_name": "ctf_db",
+      "db_port": 5432,
+      "db_username": "ctf_user",
+      "db_password": "secure_password"
+    }
+  }
+  

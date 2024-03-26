@@ -74,25 +74,30 @@
 {% endblock extra_css %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        {% for team_id, game_boxes in grouped_game_boxes.items %}
-        <div class="col-md-6 col-lg-4">
-            <div class="team-box">
-                <h3 class="team-header">Team {{ team_id }}</h3>
-                {% for box in game_boxes %}
-                    <div class="gamebox {% if box.is_down %}down{% elif box.is_attacked %}attacked{% else %}normal{% endif %}">
-                        <div class="game-info">
-                            <span class="challenge-id">Challenge ID: {{ box.challenge_id }}</span>
-                            <span class="status-label {% if box.is_down %}down{% elif box.is_attacked %}attacked{% else %}normal{% endif %}">
-                                {% if box.is_down %}Down{% elif box.is_attacked %}Attacked{% else %}Up{% endif %}
-                            </span>
+{% if round == -1 %}
+    <!-- round가 -1인 경우, 즉 대회가 진행 중이지 않을 때는 아무것도 보여주지 않음 -->
+{% else %}
+    <!-- round가 -1이 아닌 경우, 즉 대회가 진행 중일 때는 아래의 내용을 보여줌 -->
+    <div class="container mt-4">
+        <div class="row">
+            {% for team_id, game_boxes in grouped_game_boxes.items %}
+            <div class="col-md-6 col-lg-4">
+                <div class="team-box">
+                    <h3 class="team-header">Team {{ team_id }}</h3>
+                    {% for box in game_boxes %}
+                        <div class="gamebox {% if box.is_down %}down{% elif box.is_attacked %}attacked{% else %}normal{% endif %}">
+                            <div class="game-info">
+                                <span class="challenge-id">Challenge ID: {{ box.challenge_id }}</span>
+                                <span class="status-label {% if box.is_down %}down{% elif box.is_attacked %}attacked{% else %}normal{% endif %}">
+                                    {% if box.is_down %}Down{% elif box.is_attacked %}Attacked{% else %}Up{% endif %}
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
             </div>
+            {% endfor %}
         </div>
-    {% endfor %}
     </div>
-</div>
+{% endif %}
 {% endblock content %}
