@@ -51,7 +51,6 @@ CHANNEL_LAYERS = {
         },
     },
 }
-
 import os
 LOGGING = {
     'version': 1,
@@ -87,7 +86,6 @@ LOGGING = {
         },
     },
 }
-
 ### ========== My Customize settings ========== ###
 
 
@@ -157,8 +155,12 @@ TEMPLATES = [
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'fortuna',
+        'USER': 'fortuna',
+        'PASSWORD': 'fortuna',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 

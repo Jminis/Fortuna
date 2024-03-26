@@ -18,4 +18,3 @@ nohup redis-server &>/dev/null &
 python manage.py collectstatic 
 echo "Starting Daphne server on port 8000..."
 daphne -p 8000 FortunaProject.asgi:application
-
