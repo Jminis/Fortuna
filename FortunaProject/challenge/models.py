@@ -6,6 +6,7 @@ class Challenge(models.Model):
     challenge_id = models.PositiveIntegerField(null=True, blank=True)                   ## 식별자
     challenge_name = models.CharField(max_length=255, null=True, blank=True)            ## 챌린지 이름
     description = models.CharField(max_length=500, null=True, blank=True)               ## 챌린지 설명
+    ip = models.CharField(max_length=255, null=True, blank=True)                        ## IP 주소
 
     class Meta:
         db_table = 'challenges'

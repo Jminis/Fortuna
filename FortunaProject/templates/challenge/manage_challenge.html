@@ -13,34 +13,6 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h2 class="card-title text-center">Team List</h2>
-                    <div class="table-responsive">
-                        <table class="table">
-                            <!-- 테이블 헤더 -->
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>TeamID</th>
-                                    <th>Logo</th>
-                                </tr>
-                            </thead>
-                            <!-- 테이블 본문 -->
-                            <tbody>
-                                {% for team in teams %}
-                                <tr>
-                                    <td>{{ team.name }}</td>
-                                    <td>{{ team.team_id }}</td>
-                                    <td>{{ team.logo }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <br>
-            <div class="card">
-                <div class="card-body">
                     <h2 class="card-title text-center">Challenge List</h2>
                     <div class="table-responsive" style="padding-bottom: 8px;">
                         <table class="table">
@@ -50,7 +22,6 @@
                                     <th>Challenge ID</th>
                                     <th>Challenge Name</th>
                                     <th>Description</th>
-                                    <th>Score</th>
                                 </tr>
                             </thead>
                             <!-- 테이블 본문 -->
@@ -60,7 +31,6 @@
                                     <td>{{ challenge.challenge_id }}</td>
                                     <td>{{ challenge.challenge_name }}</td>
                                     <td>{{ challenge.description }}</td>
-                                    <td>{{ challenge.score }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

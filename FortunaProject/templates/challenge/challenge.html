@@ -71,7 +71,7 @@
 
 
 <!-- Bootstrap JS와 CSS 추가 -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/5.0.0-beta1/css/bootstrap.min.css">
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.0.0-beta1/js/bootstrap.min.js"></script>
@@ -82,17 +82,19 @@
     const staticBaseUrl = "{% static '' %}";
 
     function fetchGameboxData() { // GameBox로부터 데이터를 받아오는 함수
-        console.log("user name is ", {{user.username}});
-        console.log("user id is ", {{user.team_id}});
-        fetch('/challenge/get_challenge_data?team_id={{ user.team_id }}')  // 게임 데이터를 불러오는 URL
-            .then(response => response.json())
-            .then(data => {
-                if (data.length > 0) {
-                    clearInterval(fetchInterval);  // 데이터가 있으면 반복 중지
-                    updateGameboxButtons(data);    // 버튼 업데이트 함수 호출
-                }
-            })
-            .catch(error => console.error('Error fetching gamebox data:', error));
+	console.log({{team.team_id}});
+	const teamId = "{{ user.team_id }}"; // Django 템플릿 변수 예시
+	if(teamId !== 'None') {
+		fetch('/challenge/get_challenge_data?team_id={{ user.team_id }}')  // 게임 데이터를 불러오는 URL
+	            .then(response => response.json())
+        	    .then(data => {
+                	if (data !== null && data.length > 0) {
+	                    clearInterval(fetchInterval);  // 데이터가 있으면 반복 중지
+	                    updateGameboxButtons(data);    // 버튼 업데이트 함수 호출
+	                }
+        	    })
+	            .catch(error => console.error('Error fetching gamebox data:', error));
+	}
     }
 
     function updateGameboxButtons(gameboxes) { // 게임박스 버튼 생성 함수
@@ -122,8 +124,9 @@
         });
     }
 
+    var ipAddress = window.location.hostname;
     // 웹소켓 연결 설정
-    let challenge_socket = new WebSocket('ws://127.0.0.1:8000/ws/challenge/');
+    let challenge_socket = new WebSocket('ws://'+ ipAddress +':8000/ws/challenge/');
 
     // 웹소켓 메시지 수신 이벤트
     challenge_socket.onmessage = function (event) {
@@ -146,18 +149,18 @@
     function openModal(challengeId) { // 모달 열기 함수
         // AJAX 요청
         var url = `/challenge/get_challenge_data?challenge_id=${challengeId}&team_id={{ user.team_id }}`
-        console.log(challengeId)
         fetch(`/challenge/get_challenge_data?challenge_id=${challengeId}&team_id={{ user.team_id }}`)
             .then(response => response.json())
             .then(data => {
+		const gameData = data[0];
                 // 모달 내용 업데이트
-                document.querySelector('#myModal .modal-container-title').textContent = data.challenge_name;
+                document.querySelector('#myModal .modal-container-title').textContent = gameData.challenge_name;
                 document.querySelector('#myModal .modal-container-body').innerHTML = `
                     <h2>문제 설명</h2><br>
-                    <p>${data.description}</p>
+                    <p>${gameData.description}</p>
                     <br>
-                    <div>score: ${data.score}</div>
-                    <div>접속정보 = ${data.ip}:${data.port}</div>
+                    <div>score: ${gameData.score}</div>
+                    <div>접속정보 = ${gameData.ip}:${gameData.port}</div>
                 `;
                 document.querySelector('#myModal .modal-container-footer').innerHTML = ``;
                 // 모달 표시

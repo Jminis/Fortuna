@@ -76,10 +76,12 @@ def get_gamebox_data(request):
                 'challenge_name': challenge.challenge_name if challenge else "챌린지 없음",
                 'team_id': gamebox.team_id,
                 'description': challenge.description if challenge else "설명 없음",
-                'score': gamebox.sccore,
+                'score': gamebox.score,
                 'visible': gamebox.visible,
                 'is_down': gamebox.is_down,
                 'is_attacked': gamebox.is_attacked,
+                'ip': gamebox.ip,
+                'port': gamebox.port
             }]
         except GameBox.DoesNotExist:
             data = {'error': 'GameBox not found.'}
@@ -115,7 +117,7 @@ def upsert_challenge_view(request):
         for challenge in challenges:
             team_id = i
             challenge_id = challenge.challenge_id
-            ip = f'192.168.1.{challenge.challenge_id}00{i}'
+            ip = challenge.ip
             port = challenge.challenge_id*1000 + i
             ssh_port = challenge.challenge_id*100+i
             ssh_username = f'user{i}'
