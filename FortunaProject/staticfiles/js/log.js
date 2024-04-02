@@ -1,4 +1,4 @@
-let socket = new WebSocket('ws://127.0.0.1:8000/ws/log/');
+let socket = new WebSocket('ws:54.227.206.13:8000/ws/log/');
 
 socket.onmessage = function(event) {
     console.log("Log WebSocket connected!");

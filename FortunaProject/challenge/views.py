@@ -9,6 +9,15 @@ from .forms import ChallengeForm
 import json
 from account.models import Team
 from config.models import Config
+from functools import wraps
+
+def admin_required(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.user.is_staff and not request.user.is_superuser:
+            return redirect('index')
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
 
 ## User Page View
 def challenge_view(request):
@@ -16,6 +25,7 @@ def challenge_view(request):
     return render(request, 'challenge/challenge.html', context)
 
 ## Manage Page View
+@admin_required
 def manage_gamebox_view(request):
     # 새 GameBox 객체를 추가하기 위한 폼
     if request.method == 'POST':
@@ -34,6 +44,7 @@ def manage_gamebox_view(request):
 
 @csrf_exempt  # CSRF 토큰을 비활성화합니다. 실제 환경에서는 적절한 CSRF 보호를 사용해야 합니다.
 @require_POST  # POST 요청만 허용합니다.
+@admin_required
 def update_gamebox_status(request):
     try:
         # 요청의 JSON 본문을 파싱합니다.

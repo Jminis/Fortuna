@@ -1,11 +1,21 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils import timezone
 from config.models import Config
 from datetime import timedelta
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from functools import wraps
 import os
 
+def admin_required(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.user.is_staff and not request.user.is_superuser:
+            return redirect('index')
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
+
+@admin_required
 @login_required
 def manage_challenge_view(request):
     context = {}
@@ -14,6 +24,7 @@ def manage_challenge_view(request):
 import paramiko
 from challenge.models import GameBox
 
+@admin_required
 @login_required
 def dashboard_view(request):
     current_config = Config.objects.first()

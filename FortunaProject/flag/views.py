@@ -146,7 +146,6 @@ def export_authinfo_to_txt(request):
     return response
 
 def get_action_tries_for_team(request, team_name):
-    action_tries = ActionTry.objects.filter(attacker_name=team_name, round=round)
+    action_tries = ActionTry.objects.filter(attacker_name=team_name)
     data = serializers.serialize('json', action_tries)
     return JsonResponse(data, safe=False)
-

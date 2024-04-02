@@ -35,7 +35,9 @@
                                 <tr>
                                     <td>{{ team }}</td>
                                     {% for status in statuses %}
-                                    <td class="{% if status == 'active' %}status-active{% else %}status-inactive{% endif %}">{{ status }}</td>
+                                    <td
+                                        class="{% if status == 'active' %}status-active{% else %}status-inactive{% endif %}">
+                                        {{ status }}</td>
                                     {% endfor %}
                                 </tr>
                                 {% endfor %}
@@ -45,9 +47,6 @@
                 </div>
             </div>
         </div>
-        
-        
-        
     </div>
     <br>
     <div class="row">
@@ -55,12 +54,32 @@
             <div class="card">
                 <div class="card-body">
                     <h2 class="card-title text-center">Django Log</h2>
-                        <div class="dashboard-log">
-                            {{ django_log }}
-                        </div>
+                    <div id="django-log" class="dashboard-log">
+                        <!-- 스트리밍 로그 데이터가 여기에 표시됩니다 -->
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+    const logContainer = document.getElementById('django-log');
+
+    const logSocket = new WebSocket('ws://' + window.location.host + '/ws/manage/');
+
+    logSocket.onmessage = function (e) {
+        const logEntry = document.createElement('div');
+        logEntry.textContent = e.data;
+        logContainer.appendChild(logEntry);
+
+        // 로그 영역을 항상 최신 상태로 스크롤
+        logContainer.scrollTop = logContainer.scrollHeight;
+    }
+
+    logSocket.onclose = function (e) {
+        console.error('Log socket closed unexpectedly');
+        // 웹소켓 연결이 닫힌 경우, 사용자에게 알림
+        logContainer.textContent = 'Log streaming has been stopped.';
+    };
+</script>
 {% endblock content %}
