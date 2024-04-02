@@ -11,15 +11,45 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Current Round: {{ round }}</h5>
-                    <h5 class="card-title">Flags</h5>
-                    <ul class="list-group list-group-flush scrollable-list">
-                        {% for info in round_info %}
-                        <li class="list-group-item">
-                            Team{{info.team_id}}-{{ info.challenge_name }}(Chall: {{ info.challenge_id }}):
-                            {{info.flag}}
-                        </li>
-                        {% endfor %}
+                    <h2 class="card-title text-center"> Round {{ round }}</h2>
+
+                    <br>
+                    <div class="row mb-3 align-items-center">
+                        <div class="col-md-6">
+                            <h2 class="card-title text-left">Flags</h2>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <!-- Export AuthInfo 버튼 -->
+                            <a href="{% url 'export_authinfo' %}" class="btn btn-secondary"
+                                style="margin-left: 10px;">Export
+                                Flag
+                            </a>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <!-- 테이블 헤더 -->
+                            <thead>
+                                <tr>
+                                    <th>TeamID</th>
+                                    <th>Challenge</th>
+                                    <th>ChallengeID</th>
+                                    <th>Flag</th>
+                                </tr>
+                            </thead>
+                            <!-- 테이블 본문 -->
+                            <tbody>
+                                {% for info in round_info %}
+                                <tr>
+                                    <td>{{ info.team_id }}</td>
+                                    <td>{{ info.challenge_name }}</td>
+                                    <td>{{ info.challenge_id }}</td>
+                                    <td>{{info.flag}}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                     </ul>
                 </div>
             </div>
@@ -27,7 +57,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Current Challenge Info</h5>
+                    <h5 class="card-title text-center">Current Challenge Info</h5>
                     <ul class="list-group">
                         {% for info in round_info %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -49,19 +79,18 @@
                         {% csrf_token %}
                         <button type="submit" class="btn btn-primary">Renew Flag</button>
                     </form>
-                    <!-- Export AuthInfo 버튼 -->
-                    <a href="{% url 'export_authinfo' %}" class="btn btn-secondary" style="margin-left: 10px;">Export
-                        Flag
-                    </a>
                     <br>
                     <br>
 
                     <h5 class="card-title">Team Actions</h5>
-                        {% for team in teams %}
-                        <button type="button" class="btn btn-info" onclick="openModalForTeam('{{ team.name }}')">{{ team.name }}</button>
-                        {% endfor %}
+                    {% for team in teams %}
+                    <button type="button" class="btn btn-info" onclick="openModalForTeam('{{ team.name|urlencode }}')">
+                        {{ team.name }}
+                    </button>
+                    {% endfor %}
                     <!-- Modal Structure -->
-                    <div class="modal fade" id="actionTryModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                    <div class="modal fade" id="actionTryModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+                        aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -71,7 +100,7 @@
                                     </button>
                                 </div>
                                 <div class="modal-body" id="modalBody">
-                                <!-- Content will be loaded here via JavaScript -->
+                                    <!-- Content will be loaded here via JavaScript -->
                                 </div>
                             </div>
                         </div>
@@ -88,26 +117,26 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     function openModalForTeam(teamName) {
-  fetch(`/manage/get_action_tries/${teamName}`)
-    .then(response => response.json())  // response를 JSON으로 받습니다.
-    .then(data => {
-      const parsedData = JSON.parse(data);  // JSON 문자열을 JavaScript 객체로 파싱합니다.
+        fetch(`/manage/get_action_tries/${teamName}`)
+            .then(response => response.json())  // response를 JSON으로 받습니다.
+            .then(data => {
+                const parsedData = JSON.parse(data);  // JSON 문자열을 JavaScript 객체로 파싱합니다.
 
-      const modalBody = document.getElementById('modalBody');
-      modalBody.innerHTML = '';  // 모달 내용 초기화
+                const modalBody = document.getElementById('modalBody');
+                modalBody.innerHTML = '';  // 모달 내용 초기화
 
-      parsedData.forEach(actionTry => {
-  const div = document.createElement('div');
-  div.style.overflowWrap = 'break-word'; // 긴 단어도 줄바꿈 되도록 설정
-  const createdAt = new Date(actionTry.fields.created_at).toLocaleString();
-  div.textContent = `${actionTry.fields.attacker_name}(${actionTry.fields.created_at}): ${actionTry.fields.contents} - ${actionTry.fields.correct ? 'Correct' : 'Incorrect'}`;
-  modalBody.appendChild(div);
-});
+                parsedData.forEach(actionTry => {
+                    const div = document.createElement('div');
+                    div.style.overflowWrap = 'break-word'; // 긴 단어도 줄바꿈 되도록 설정
+                    const createdAt = new Date(actionTry.fields.created_at).toLocaleString();
+                    div.textContent = `${actionTry.fields.attacker_name}(${actionTry.fields.created_at}): ${actionTry.fields.contents} - ${actionTry.fields.correct ? 'Correct' : 'Incorrect'}`;
+                    modalBody.appendChild(div);
+                });
 
-      $('#actionTryModal').modal('show');  // 모달 표시
-    })
-    .catch(error => console.error('Error:', error));
-}
-    </script>
+                $('#actionTryModal').modal('show');  // 모달 표시
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
 
 {% endblock content %}
