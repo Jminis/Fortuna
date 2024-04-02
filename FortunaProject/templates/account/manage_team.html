@@ -39,6 +39,7 @@
                                     <th>Logo</th>
                                     <th>Score</th>
                                     <th>Actions</th>
+                                    <th>Delete</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -52,8 +53,7 @@
                                     <td>
                                         <!-- Update button -->
                                         <button type="button" class="btn btn-info update-btn" data-toggle="modal"
-                                            data-target="#updateTeamModal" 
-                                            data-team-id="{{ team.id }}"
+                                            data-target="#updateTeamModal" data-team-id="{{ team.id }}"
                                             data-team-name="{{ team.name }}" data-team-score="{{ team.score }}"
                                             data-team-team-id="{{ team.team_id }}"
                                             data-team-password="{{ team.password }}"
@@ -61,6 +61,8 @@
                                             data-team-is-staff="{{ team.is_staff }}">Update
                                         </button>
                                         <!-- Delete button -->
+                                    </td>
+                                    <td>
                                         <form method="post" action="{% url 'delete_team' team.id %}"
                                             style="display: inline;">
                                             {% csrf_token %}
@@ -124,7 +126,7 @@
             var teamToken = $(this).data('team-token');
             var teamIsStaff = $(this).data('team-is-staff') === 'True'; // Boolean 값 처리
             console.log(teamTeamId);
-            
+
 
             // 모달의 폼 필드에 값을 설정
             $('#updateTeamModal input[name="name"]').val(teamName);

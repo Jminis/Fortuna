@@ -2,6 +2,16 @@ from django.shortcuts import render, redirect
 from .models import Config
 from .forms import ConfigForm
 
+from functools import wraps
+def admin_required(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.user.is_staff and not request.user.is_superuser:
+            return redirect('index')
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
+
+@admin_required
 def config_view(request):
     #config 입력
     if request.method == "POST":

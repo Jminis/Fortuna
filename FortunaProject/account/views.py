@@ -9,6 +9,7 @@ from .forms import TeamCreationForm
 from .models import Team
 from functools import wraps
 
+
 def admin_required(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):

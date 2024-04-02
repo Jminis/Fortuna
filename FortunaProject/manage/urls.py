@@ -19,7 +19,7 @@ urlpatterns = [
     path('update_team/<int:team_id>', account.update_team_view, name='update_team'),
 
     # Notice
-    path('notice/', notice.create_notice_view, name='create_notice'),
+    path('notice/', notice.manage_notice_view, name='manage_notice'),
     path('delete_notice/<int:notice_id>', notice.delete_notice_view, name='delete_notice'),
 
 
