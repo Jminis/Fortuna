@@ -1,4 +1,14 @@
-let socket = new WebSocket('ws:54.227.206.13:8000/ws/log/');
+//let socket = new WebSocket('ws:54.227.206.13:8000/ws/log/');
+// let loc = window.location, new_uri;
+// if (loc.protocol === "https:") {
+//     new_uri = "wss:";
+// } else {
+//     new_uri = "ws:";
+// }
+// //new_uri += "//" + loc.host;  // loc.host는 호스트명과 포트를 포함합니다.
+// new_uri += loc.host;  // loc.host는 호스트명과 포트를 포함합니다.
+// new_uri += "ws/log/";
+let socket = new WebSocket('ws://' + window.location.host + '/ws/log/');
 
 socket.onmessage = function(event) {
     console.log("Log WebSocket connected!");

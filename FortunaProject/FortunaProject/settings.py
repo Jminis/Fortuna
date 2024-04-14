@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-8q%_x)l#ws^ch84^mivm5cqsfls-v@s$v6qyz$%p_yeaa-6l7#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ### ========== My Customize settings ========== ###
 # -- 개발환경에서 사용되는 static url
@@ -112,6 +112,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'channels',
     'channels_redis',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -123,7 +124,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    #'config.middleware.ProjectAccessMiddleware',
 ]
 
 LOGIN_REDIRECT_URL = '/'
@@ -148,8 +148,6 @@ TEMPLATES = [
 ]
 
 
-
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -164,6 +162,12 @@ DATABASES = {
     }
 }
 
+# Celery
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Redis를 브로커로 사용
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Seoul'  # 시간대 설정
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

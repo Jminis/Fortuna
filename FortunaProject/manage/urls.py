@@ -37,6 +37,5 @@ urlpatterns = [
 
     # Config
     path('config/', config.config_view, name='config'),
-    path('config/not_in_progess', config.not_in_progess_view, name='not_in_progress')
 ]
 
