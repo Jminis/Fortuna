@@ -17,7 +17,7 @@ nohup redis-server &>/dev/null &
 
 python manage.py collectstatic 
 echo "Starting Daphne server on port 8000..."
-nohup daphne -p 8000 -b 0.0.0.0 FortunaProject.asgi:application &>/dev/null &
+#nohup daphne -p 8000 -b 0.0.0.0 FortunaProject.asgi:application &>/dev/null &
 #python3 manage.py runserver 0.0.0.0:8000
 
 LOGFILE="$HOME/celery_beat.log"
@@ -30,3 +30,4 @@ mkdir -p $(dirname "$LOG_DIR")
 
 echo "Starting Celery Worker and Beat..."
 nohup celery -A FortunaProject worker -l info >> "$LOG_DIR" 2>&1 &
+daphne -p 8000 -b 0.0.0.0 FortunaProject.asgi:application

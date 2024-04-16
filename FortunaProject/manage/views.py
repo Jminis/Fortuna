@@ -27,9 +27,9 @@ from challenge.models import GameBox
 @admin_required
 @login_required
 def dashboard_view(request):
-    current_config = Config.objects.first()
-    now = timezone.now()
-
+    timezone.activate('Asia/Seoul')
+    current_config = Config.objects.latest('created_at')
+    now = timezone.localtime(timezone.now())
     if current_config:
         round_duration = timedelta(minutes=current_config.round_time)
         elapsed_time = now - current_config.starttime
@@ -46,7 +46,6 @@ def dashboard_view(request):
     
     # Fetch all GameBoxes
     gameboxes = GameBox.objects.all()
-
     # Paramiko SSH client setup
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
