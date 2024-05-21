@@ -13,15 +13,16 @@ class Challenge(models.Model):
 
 class GameBox(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)                                ## 생성 시간
-    team_id = models.PositiveIntegerField(null=True, blank=True)                        ## 챌린지 소유 팀 식별자
-    challenge_id = models.PositiveIntegerField(null=True, blank=True)                   ## 식별자
+    team_id = models.PositiveIntegerField(null=False, blank=True)                        ## 챌린지 소유 팀 식별자
+    challenge_id = models.PositiveIntegerField(null=False, blank=True)                   ## 식별자
     ip = models.CharField(max_length=255, null=True, blank=True)                        ## IP 주소
     port = models.PositiveIntegerField(null=True, blank=True)                           ## 포트 번호
     ssh_port = models.PositiveIntegerField(null=True, blank=True)                       ## SSH 포트 번호
     ssh_user = models.CharField(max_length=255, null=True, blank=True)                  ## SSH 사용자 이름
     ssh_password = models.CharField(max_length=255, null=True, blank=True)              ## SSH 비밀번호
     visible = models.BooleanField(null=False, blank=True, default=True)                 ## 챌린지 가시화 여부
-    score = models.FloatField(null=True, blank=True)                                    ## 챌린지 점수
+    point_down = models.IntegerField()                                                  ## 차감 점수
+    point_attack = models.IntegerField()                                                ## 획득 점수
     is_down = models.BooleanField(null=False, blank=True, default=False)                ## SLA 다운 여부
     is_attacked = models.BooleanField(null=False, blank=True, default=False)            ## 공격 받은 여부
     

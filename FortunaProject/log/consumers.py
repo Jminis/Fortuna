@@ -73,7 +73,7 @@ class LogConsumer(AsyncWebsocketConsumer):
             )
             # 이미 제출된 플래그일 경우
             if existing_log:
-                await self.send(text_data=json.dumps({'toast': "이미 제출된 플래그입니다!"}))
+                await self.send(text_data=json.dumps({'toast': "이미 제출된 플래그입니다."}))
                 correct = False
                 return
 
@@ -83,7 +83,7 @@ class LogConsumer(AsyncWebsocketConsumer):
                 correct = False
                 return
 
-            await self.send(text_data=json.dumps({'toast': f"You've been attacked {auth_info.team_name}"}))
+            await self.send(text_data=json.dumps({'toast': f"{auth_info.team_name}팀을 공격했습니다."}))
 
             #사용자 입력 로그 갱신
             await database_sync_to_async(self.create_action_try)(user, flag, correct, attacker_team_id, round)
@@ -91,9 +91,9 @@ class LogConsumer(AsyncWebsocketConsumer):
             #correct가 True인 경우에만 is_attacked와 score, actionlog 갱신
             if correct == True:
                 # is_attacked 갱신
-                score = await database_sync_to_async(self.update_game_box)(auth_info.team_id, auth_info.challenge_id)
+                point_down, point_up = await database_sync_to_async(self.update_game_box)(auth_info.team_id, auth_info.challenge_id)
                 # score 갱신
-                await database_sync_to_async(self.update_team_score)(auth_info.team_id, score)
+                await database_sync_to_async(self.update_team_score)(auth_info.team_id, point_down, attacker_team_id, point_up)
 
                 #공격 로그(actionlog) 생성                
                 await database_sync_to_async(self.create_action_log)(user, auth_info, flag, round, attacker_team_id)
@@ -133,19 +133,28 @@ class LogConsumer(AsyncWebsocketConsumer):
         for game_box in game_boxes:
             game_box.is_attacked = True
             game_box.save()
-            scores.append(game_box.score)
-        return scores[0]
+            scores.append(game_box.point_down)
+            scores.append(game_box.point_attack)
+        return scores[0], scores[1]
 
 
-    def update_team_score(self, team_id, score_to_deduct):
-        print("here's update team score")
+    def update_team_score(self, attacked_id, score_to_deduct, attacker_id, score_to_plus):
+        #점수 차감
         try:
-            teams = Team.objects.filter(team_id=team_id)
-            print(f"teams: {teams}")
+            teams = Team.objects.filter(team_id=attacked_id)
             if teams.count() == 1:
                 team = teams.first()
-                print(f"team is {team}")
                 team.score -= score_to_deduct
+                team.save()
+        except Team.DoesNotExist:
+            print("Team doesn't exist")
+            pass  # 혹은 적절한 로깅 또는 예외 처리
+        #점수 차증
+        try:
+            teams = Team.objects.filter(team_id=attacker_id)
+            if teams.count() == 1:
+                team = teams.first()
+                team.score += score_to_plus
                 team.save()
         except Team.DoesNotExist:
             print("Team doesn't exist")

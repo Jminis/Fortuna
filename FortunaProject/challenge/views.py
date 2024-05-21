@@ -119,36 +119,45 @@ def get_gamebox_data(request):
     return JsonResponse(data, safe=False if isinstance(data, list) else True)
 
 def upsert_challenge_view(request):
-    GameBox.objects.all().delete()
-    config = Config.objects.all().first()
-    challenges = Challenge.objects.all()
-    team_count = Team.objects.count()
+    try:
+        GameBox.objects.all().delete()
+        config = Config.objects.all().first()
+        challenges = Challenge.objects.all()
+        team_count = Team.objects.count()
+    except AttributeError as e:
+        print(e)
 
     for i in range(1, team_count + 1):
-        for challenge in challenges:
-            team_id = i
-            challenge_id = challenge.challenge_id
-            ip = challenge.ip
-            port = challenge.challenge_id*1000 + i
-            ssh_port = challenge.challenge_id*100+i
-            ssh_username = f'user{i}'
-            ssh_password = f'1234{i}'
-            visible = True
-            score = config.point_base
-            is_down = False
-            is_attacked = False
-            GameBox.objects.create(
-                team_id = team_id,
-                challenge_id = challenge_id,
-                ip = ip,
-                port = port,
-                ssh_port = ssh_port,
-                ssh_user = ssh_username,
-                ssh_password = ssh_password,
-                visible = visible,
-                score = score,
-                is_down = is_down,
-                is_attacked = is_attacked
-            )
+        try:
+            for challenge in challenges:
+                team_id = i
+                challenge_id = challenge.challenge_id
+                ip = challenge.ip
+                port = challenge.challenge_id * 1000 + i
+                ssh_port = challenge.challenge_id * 100 + i
+                ssh_username = f'user{i}'
+                ssh_password = f'1234{i}'
+                visible = True
+                point_down = config.point_down
+                point_attack = config.point_attack
+                is_down = False
+                is_attacked = False
+                GameBox.objects.create(
+                    team_id=team_id,
+                    challenge_id=challenge_id,
+                    ip=ip,
+                    port=port,
+                    ssh_port=ssh_port,
+                    ssh_user=ssh_username,
+                    ssh_password=ssh_password,
+                    visible=visible,
+                    point_down=point_down,
+                    point_attack=point_attack,
+                    is_down=is_down,
+                    is_attacked=is_attacked
+                )
+        except AttributeError as e:
+            if str(e).find('NoneType') != -1:
+                print('config를 생성해주세요')
 
     return redirect('manage_challenge')
